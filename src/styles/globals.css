@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff; /* White background */
+  --foreground: #171717; /* Dark foreground */
+}
+
+@layer utilities {
+  .bg-background {
+    background-color: var(--background); /* Use CSS variable */
+  }
+  .text-text {
+    color: var(--foreground); /* Use CSS variable */
+  }
+}
+
+body {
+  @apply bg-background text-text font-sans; /* Use defined utility classes */
+}
+
+h1, h2, h3, h4 {
+  @apply font-bold; /* Apply bold font */
+}
+
+a {
+  @apply text-primary hover:text-accent transition duration-200; /* Apply styles to links */
+}
