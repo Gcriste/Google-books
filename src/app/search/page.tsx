@@ -1,15 +1,13 @@
+import SearchBooksContainer from "@/components/search/container";
+import Container from "@/components/common/containr";
 import BookContextProvider from "@/context/provider";
-import SearchBooksContainer from "../components/searched-books/container";
 
 const HomePage = () => {
   return (
     <BookContextProvider>
-      <div>
-        <h1 className="text-center text-2xl font-bold mt-10">
-          Google Books Search
-        </h1>
+      <Container title="Search" subtitle="Search for a book">
         <SearchBooksContainer />
-      </div>
+      </Container>
     </BookContextProvider>
   );
 };

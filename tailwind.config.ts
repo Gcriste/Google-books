@@ -9,13 +9,11 @@ const config: Config = {
         primary: ["Inter", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        // Customize it on globals.css :root
-        primary: "#3B82F6", // blue
-        secondary: "#3D2D5B", // dark purple
-        accent: "#FBBF24", // yellow
-        background: "#F9FAFB", // light gray
-        text: "#1F2937", // dark gray
-        dark: "#222222",
+        primary: "#1877F2", // Facebook blue
+        secondary: "#1C3A83", // Darker blue for contrast
+        accent: "#A8D1FF", // Light blue for hover or highlights
+        background: "#F0F2F5", // Light gray background
+        text: "#050505", // Dark text color 
       },
       keyframes: {
         flicker: {

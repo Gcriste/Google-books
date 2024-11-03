@@ -7,8 +7,10 @@ import { useBookContext } from "@/context/use-book-context";
 
 const SearchBooksContainer: React.FC = () => {
   const { searchedBooks } = useBookContext();
+
+  console.log('searchedBOoks', searchedBooks)
   return (
-    <div className="max-w-md mx-auto mt-10">
+    <div className=" mx-auto mt-10">
       <SearchFormContainer />
       <BookList books={searchedBooks}/>
     </div>

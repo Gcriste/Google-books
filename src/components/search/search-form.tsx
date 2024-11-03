@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import { ChangeEvent, FormEvent } from "react";
 
 type OwnProps = {
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
