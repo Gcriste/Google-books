@@ -1,3 +1,4 @@
+"use client"
 import DetailPage from "@/components/detail";
 
 const SearchDetailPage = () => {

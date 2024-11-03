@@ -1,14 +1,42 @@
-
-"use client"
-
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import Book from "./common/book";
+import Container from "./common/containr";
+const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
-const DetailPage = () =>{
-    const params = useParams();
-    console.log("params", params);
+const DetailPage = () => {
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [book, setBook] = useState<Book | undefined>(undefined);
+  console.log("id", { id, apiKey });
+  const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
 
+  useEffect(() => {
+   const fetchBook = async() =>{try {
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Failed to fetch books");
+    }
+    const data = await response.json();
+    console.log("data", { data });
+    setBook(data);
+  } catch (err) {
+    setError(err as any);
+  } finally {
+    setLoading(false);
+  }} 
+  fetchBook()
+  }, [id, apiKey]);
 
-    return <div>hi you selected</div>;
-}
+  return (
+    <Container title="Details">
+      {book &&<Book book={book} hasViewMore={false}/>}
+      {loading && <p className="mt-4">Loading...</p>}
+      {error && <p className="mt-4 text-red-500">{error}</p>}
+    </Container>
+  );
+};
 
-export default DetailPage
+export default DetailPage;

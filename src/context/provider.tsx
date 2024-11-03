@@ -2,7 +2,7 @@
 import type { FC, PropsWithChildren } from 'react'
 import React, { useMemo, useState } from 'react'
 import { BookState} from './types'
-import { Book } from '@/types'
+import { Book } from '@/app/types'
 import { BookStore } from './store'
 
 const { Provider} = BookStore
