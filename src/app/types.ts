@@ -9,6 +9,7 @@ type VolumeInfo = {
 };
 
  export type Review = {
+  id: string
   title: string;
   message: string;
   lastUpdated: string;

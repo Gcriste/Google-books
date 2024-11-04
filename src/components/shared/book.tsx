@@ -4,18 +4,25 @@ import { usePathname } from "next/navigation";
 import { Box, Button, Flex, Text } from "../common";
 import { useCallback, useState } from "react";
 import { useApi } from "@/api";
-import Review from "./review";
+import Review from "./review-list";
+import ReviewList from "./review-list";
 
 type OwnProps = {
   book: BookType;
   hasViewMore?: boolean;
-  hasWriteReview?: boolean
+  hasViewAllReviews?: boolean;
 };
 
-const Book = ({ book, hasViewMore = true, hasWriteReview = true }: OwnProps) => {
-  const pathname = usePathname();
-  const [currentBook, setCurrentBook] = useState<BookType>(book);
-  const { updateBook, getAll } = useApi();
+const Book = ({
+  book,
+  hasViewMore = true,
+  hasViewAllReviews = false,
+}: OwnProps) => {
+  const pathname = usePathname().split("/")[1];
+  const { updateBook, getBookById } = useApi();
+  const [currentBook, setCurrentBook] = useState<BookType>(
+    getBookById(book.id as string) ?? book
+  );
 
   const {
     id,
@@ -26,18 +33,24 @@ const Book = ({ book, hasViewMore = true, hasWriteReview = true }: OwnProps) => 
 
   const handleClick = useCallback(
     (action: "add" | "remove") => () => {
-      console.log("clicked", { currentBook, book });
+      console.log("clicked", { book, currentBook });
       const isFavorite = action === "add";
-      updateBook({...currentBook, isFavorite});
+      updateBook({ ...currentBook, isFavorite });
       setCurrentBook((prev) => ({ ...prev, isFavorite }));
     },
     []
   );
 
+  const isDetail = pathname.includes("/detail");
+  const isReview = pathname.includes("/reviews");
+  console.log("pathname", { pathname, isDetail, isReview });
+
   return (
     <Box>
       <Flex justify="between">
-        {imageLinks && <img src={imageLinks.thumbnail} alt={title} width="150em"/>}
+        {imageLinks && (
+          <img src={imageLinks.thumbnail} alt={title} width="150em" />
+        )}
         <Box>
           {isFavorite ? (
             <Button variant="danger" onClick={handleClick("remove")}>
@@ -54,24 +67,28 @@ const Book = ({ book, hasViewMore = true, hasWriteReview = true }: OwnProps) => 
         <h2 className="font-bold text-xl mb-2">{title}</h2>
         <p className="text-gray-700 text-base">{description}</p>
         <Flex direction="col">
-            {hasViewMore && (
-              <Link
-                href={`${pathname}/detail/${id}`}
-                className="hover:blue-300 text-primary font-bold"
-              >
-                View more details
-              </Link>
-            )}
-            {reviews?.length ? (
-              <Review id={id} reviews={reviews} />
-            ) : 
-              !hasWriteReview ? null :<Link
-                href={`${pathname}/reviews/${id}`}
-                className="hover:blue-300 text-primary font-bold"
-              >
-                Write a review
-              </Link>
-            }
+          {hasViewMore && (
+            <Link
+              href={`/${pathname}/detail/${id}`}
+              className="hover:blue-300 text-primary font-bold"
+            >
+              View more details
+            </Link>
+          )}
+          {reviews?.length ? (
+            <ReviewList
+              bookId={id}
+              reviews={reviews}
+              hasViewAllReviews={hasViewAllReviews}
+            />
+          ) : (
+            <Link
+              href={`/${pathname}/reviews/${id}`}
+              className="hover:blue-300 text-primary font-bold"
+            >
+              Write a review
+            </Link>
+          )}
         </Flex>
       </Box>
     </Box>

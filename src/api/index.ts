@@ -19,7 +19,6 @@ export const useApi = () => {
   const updateBook = (book: BookType) => {
     const currentBooks = getAll();
     const { id, ...rest } = book;
-    console.log("id", { id, ...rest, book });
     localStorage.setItem(
       "savedBooks",
       JSON.stringify({ ...currentBooks, [id]: { id, ...rest } })

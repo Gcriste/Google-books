@@ -12,7 +12,6 @@ const DetailPage = () => {
   const [error, setError] = useState("");
   const [book, setBook] = useState<BookType | undefined>(undefined);
   const { getBookById } = useApi();
-  console.log("id", { id, apiKey });
   const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
 
   useEffect(() => {

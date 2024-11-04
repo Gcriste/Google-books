@@ -3,7 +3,6 @@
 import React from "react";
 import BookList from "./book-list";
 import { Text } from "../common";
-import { Book } from "@/app/types";
 import { useApi } from "@/api";
 
 type OwnProps = {

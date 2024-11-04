@@ -11,9 +11,9 @@ const HomePage = () => {
   const { getBookById } = useApi();
 
   const updatedBooks = searchedBooks.map((book) => getBookById(book.id) ?? book);
-
+console.log('updatedBooks', updatedBooks)
   return (
-    <Container title="Search" subtitle="Search for a book">
+    <Container title="Search">
       <SearchFormContainer />
       <BookList books={updatedBooks} />
     </Container>

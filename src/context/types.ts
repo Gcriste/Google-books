@@ -1,6 +1,7 @@
-import { Book } from "@/app/types";
+import { BookType } from "@/app/types";
+import { Dispatch, SetStateAction } from "react";
 
 export type BookState = {
-  searchedBooks: Book[];
-  setSearchedBooks: (books: Book[]) => void;
+  searchedBooks: BookType[];
+  setSearchedBooks: Dispatch<SetStateAction<BookType[]>>;
 };

@@ -63,7 +63,7 @@ const ReviewsPage = () => {
       id: id as string,
       reviews: [
         ...(currentBook?.reviews ?? []),
-        { title, message: reviewText, rating, lastUpdated: formattedDate },
+        { id: crypto.randomUUID(), title, message: reviewText, rating, lastUpdated: formattedDate },
       ],
     });
     setError("");
@@ -71,9 +71,11 @@ const ReviewsPage = () => {
     setRating(0);
   };
 
+  console.log("currentBook", currentBook)
+
   return (
     <div className="p-4 border rounded-lg shadow-lg">
-      {currentBook && <Book book={currentBook} hasViewMore={false } hasWriteReview={false} />}
+      {currentBook && <Book book={currentBook} hasViewMore={false } />}
       <h2 className="text-xl font-semibold mb-2">Leave a Review</h2>
 
       {/* Rating Section */}
