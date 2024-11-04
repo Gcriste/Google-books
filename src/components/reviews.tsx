@@ -7,6 +7,7 @@ import { useApi } from "@/api";
 import { BookType } from "@/app/types";
 import { format } from "date-fns/format";
 import Book from "./shared/book";
+import {Text} from '../components/common'
 const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
 const ReviewsPage = () => {
@@ -76,8 +77,8 @@ const ReviewsPage = () => {
 
   return (
     <div className="p-4 border rounded-lg shadow-lg">
-      {currentBook && <Book book={currentBook} hasViewMore={false } />}
-      <h2 className="text-xl font-semibold mb-2">Leave a Review</h2>
+      {currentBook && <Book book={currentBook}  />}
+      <Text variant="heading" size="large">Leave a Review</Text>
 
       {/* Rating Section */}
       <Rating rating={rating} handleRatingClick={handleRatingClick} />

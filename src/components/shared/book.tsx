@@ -9,20 +9,19 @@ import ReviewList from "./review-list";
 
 type OwnProps = {
   book: BookType;
-  hasViewMore?: boolean;
-  hasViewAllReviews?: boolean;
 };
 
 const Book = ({
   book,
-  hasViewMore = true,
-  hasViewAllReviews = false,
 }: OwnProps) => {
-  const pathname = usePathname().split("/")[1];
+  const pathname = usePathname();
+  const splitPathname = pathname.split("/")[1]
   const { updateBook } = useApi();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
     book.isFavorite
   );
+  const hasViewMore = !pathname.includes('detail')
+  const hasViewAllReviews = !pathname.includes('review')
 
   const {
     id,
@@ -43,7 +42,7 @@ const Book = ({
   console.log("book inside", { book });
 
   return (
-    <Box>
+    <Flex direction="col">
       <Flex justify="between">
         {imageLinks && (
           <img src={imageLinks.thumbnail} alt={title} width="150em" />
@@ -60,13 +59,15 @@ const Book = ({
           )}
         </Box>
       </Flex>
-      <Box>
-        <h2 className="font-bold text-xl mb-2">{title}</h2>
-        <p className="text-gray-700 text-base">{description}</p>
+      <Flex direction="col">
+        <Text variant="heading" size="large">
+          {title}
+        </Text>
+        <Text>{description}</Text>
         <Flex direction="col">
           {hasViewMore && (
             <Link
-              href={`/${pathname}/detail/${id}`}
+              href={`/${splitPathname}/detail/${id}`}
               className="hover:blue-300 text-primary font-bold"
             >
               View more details
@@ -80,15 +81,15 @@ const Book = ({
             />
           ) : (
             <Link
-              href={`/${pathname}/reviews/${id}`}
+              href={`/${splitPathname}/reviews/${id}`}
               className="hover:blue-300 text-primary font-bold"
             >
               Write a review
             </Link>
           )}
         </Flex>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 };
 

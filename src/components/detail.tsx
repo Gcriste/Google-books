@@ -39,7 +39,7 @@ const DetailPage = () => {
 
   return (
     <Container title="Details">
-      {currentBook && <Book book={currentBook} hasViewMore={false} />}
+      {currentBook && <Book book={currentBook}/>}
       {loading && <p className="mt-4">Loading...</p>}
       {error && <p className="mt-4 text-red-500">{error}</p>}
     </Container>

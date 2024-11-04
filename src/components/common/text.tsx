@@ -26,7 +26,7 @@ const Text: React.FC<TextProps> = ({
   const sizeStyles = {
     small: 'text-sm',
     medium: 'text-base',
-    large: 'text-lg',
+    large: 'text-xl',
   };
 
   return (
