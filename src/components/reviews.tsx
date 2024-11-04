@@ -1,13 +1,46 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Rating from "./shared/rating";
+import { useApi } from "@/api";
+import { BookType } from "@/app/types";
+import { format } from "date-fns/format";
+import Book from "./shared/book";
+const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
 const ReviewsPage = () => {
   const { id } = useParams();
   const [rating, setRating] = useState<number>(0);
+  const [title, setTitle] = useState<string>("");
   const [reviewText, setReviewText] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [book, setBook] = useState<BookType | undefined>(undefined);
+  const { updateBook, getBookById } = useApi();
+
+  const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Failed to fetch books");
+        }
+        const data = await response.json();
+        console.log("data", { data });
+        setBook(data);
+      } catch (err) {
+        setError(err as any);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBook();
+  }, [id, apiKey]);
+
+  const currentBook = getBookById(id as string) ?? book;
 
   const handleRatingClick = (selectedRating: number) => {
     setRating(selectedRating);
@@ -23,49 +56,34 @@ const ReviewsPage = () => {
       setError("Please enter a review.");
       return;
     }
-    const currentBooks = localStorage.getItem("savedBooks") ?? "{}";
-    console.log("currentBooks", currentBooks);
-    const parsed = JSON.parse(currentBooks) ?? {};
-    const book = parsed[id as string];
-    localStorage.setItem(
-      "savedBooks",
-      JSON.stringify({
-        ...parsed,
-        [id as string]: {
-          ...book,
-          reviews: [
-            ...(book.reviews ?? []),
-            { message: reviewText, rating, lastUpdated: new Date() },
-          ],
-        },
-      })
-    );
+
+    const formattedDate = format(new Date(), 'MMMM dd, yyyy')
+    updateBook({
+      ...(currentBook ?? {}) as BookType,
+      id: id as string,
+      reviews: [
+        ...(currentBook?.reviews ?? []),
+        { title, message: reviewText, rating, lastUpdated: formattedDate },
+      ],
+    });
     setError("");
-    setReviewText(""); // Reset the text field after submission
-    setRating(0); // Reset the rating after submission
+    setReviewText("");
+    setRating(0);
   };
 
   return (
     <div className="p-4 border rounded-lg shadow-lg">
+      {currentBook && <Book book={currentBook} hasViewMore={false } hasWriteReview={false} />}
       <h2 className="text-xl font-semibold mb-2">Leave a Review</h2>
 
       {/* Rating Section */}
-      <div className="flex items-center mb-4">
-        <span className="mr-2 font-medium">Rating:</span>
-        {[1, 2, 3, 4, 5].map((num) => (
-          <button
-            key={num}
-            type="button"
-            className={`text-2xl ${
-              num <= rating ? "text-yellow-400" : "text-gray-300"
-            }`}
-            onClick={() => handleRatingClick(num)}
-          >
-            ★
-          </button>
-        ))}
-      </div>
-
+      <Rating rating={rating} handleRatingClick={handleRatingClick} />
+      {/* Title */}
+      <input
+        placeholder="Write your title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
       {/* Review Text Field */}
       <textarea
         value={reviewText}

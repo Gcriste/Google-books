@@ -9,11 +9,11 @@ const config: Config = {
         primary: ["Inter", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: "#1877F2", // Facebook blue
-        secondary: "#1C3A83", // Darker blue for contrast
-        accent: "#A8D1FF", // Light blue for hover or highlights
-        background: "#F0F2F5", // Light gray background
-        text: "#050505", // Dark text color 
+        primary: "#1877F2",
+        secondary: "#1C3A83",
+        accent: "#A8D1FF",
+        background: "#F0F2F5",
+        text: "#050505", 
       },
       keyframes: {
         flicker: {

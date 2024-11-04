@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 
 type FlexProps = {
   children: ReactNode;
@@ -6,9 +6,10 @@ type FlexProps = {
   justify?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
   align?: 'start' | 'center' | 'end' | 'stretch';
   wrap?: boolean;
-  gap?: string; // Tailwind gap classes like "gap-4"
+  gap?: string;
   className?: string;
-}
+  maxWidth?: string; 
+} & HTMLAttributes<HTMLDivElement>; 
 
 const Flex = ({
   children,
@@ -18,12 +19,16 @@ const Flex = ({
   wrap = false,
   gap = 'gap-4',
   className = '',
+  maxWidth, 
+  ...rest
 }: FlexProps) => {
   return (
     <div
       className={`flex flex-${direction} items-${align} justify-${justify} ${
         wrap ? 'flex-wrap' : ''
       } ${gap} ${className}`}
+      style={{ maxWidth }} 
+      {...rest} 
     >
       {children}
     </div>

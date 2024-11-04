@@ -2,10 +2,10 @@
 import React from 'react';
 
 interface TextProps {
-  variant?: 'heading' | 'subheading' | 'body' | 'caption'; // Text variants
-  size?: 'small' | 'medium' | 'large'; // Text sizes
-  children: React.ReactNode; // Content to be displayed
-  className?: string; // Additional classes for custom styling
+  variant?: 'heading' | 'subheading' | 'body' | 'caption';
+  size?: 'small' | 'medium' | 'large'
+  children: React.ReactNode;
+  className?: string; 
 }
 
 const Text: React.FC<TextProps> = ({
@@ -14,10 +14,8 @@ const Text: React.FC<TextProps> = ({
   children,
   className = '',
 }) => {
-  // Define base text styles
   const baseStyles = `${className}`;
 
-  // Define variant styles
   const variantStyles = {
     heading: 'font-bold text-gray-800',
     subheading: 'font-semibold text-gray-700',
@@ -25,7 +23,6 @@ const Text: React.FC<TextProps> = ({
     caption: 'text-gray-500 text-sm',
   };
 
-  // Define size styles
   const sizeStyles = {
     small: 'text-sm',
     medium: 'text-base',

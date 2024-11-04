@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 
-type BoxProps = {
+type BoxProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
-  className?: string; // Allows adding custom styles if needed
+  className?: string; 
 }
 
-const Box = ({ children, className = "" }: BoxProps) => {
+const Box = ({ children, className = "" , ...rest}: BoxProps) => {
   return (
-    <div className={`${className}`}>
+    <div className={`${className}`} {...rest}>
       {children}
     </div>
   );

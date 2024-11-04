@@ -1,20 +1,21 @@
-import { Book } from "@/app/types";
+import { BookType } from "@/app/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, Flex, Text } from "../common";
+import { Box, Button, Flex, Text } from "../common";
 import { useCallback, useState } from "react";
 import { useApi } from "@/api";
-import isEqual from "lodash/isEqual";
+import Review from "./review";
 
 type OwnProps = {
-  book: Book;
+  book: BookType;
   hasViewMore?: boolean;
+  hasWriteReview?: boolean
 };
 
-const Book = ({ book, hasViewMore = true }: OwnProps) => {
+const Book = ({ book, hasViewMore = true, hasWriteReview = true }: OwnProps) => {
   const pathname = usePathname();
-  const [currentBook, setCurrentBook] = useState<Book>(book)
-  const {updateBook, getAll} = useApi()
+  const [currentBook, setCurrentBook] = useState<BookType>(book);
+  const { updateBook, getAll } = useApi();
 
   const {
     id,
@@ -23,29 +24,36 @@ const Book = ({ book, hasViewMore = true }: OwnProps) => {
     volumeInfo: { title, description, imageLinks },
   } = currentBook;
 
-
-
   const handleClick = useCallback(
     (action: "add" | "remove") => () => {
-      console.log('clicked', { currentBook, book})
-      const isFavorite = action === 'add'
-      updateBook(currentBook, isFavorite)
-      setCurrentBook(prev => ({...prev, isFavorite}))
+      console.log("clicked", { currentBook, book });
+      const isFavorite = action === "add";
+      updateBook({...currentBook, isFavorite});
+      setCurrentBook((prev) => ({ ...prev, isFavorite }));
     },
     []
   );
 
-
   return (
-    <div id={id}>
-      {imageLinks && (
-        <img src={imageLinks.thumbnail} alt={title} className="mt-2" />
-      )}
-      <div className="p-4">
+    <Box>
+      <Flex justify="between">
+        {imageLinks && <img src={imageLinks.thumbnail} alt={title} width="150em"/>}
+        <Box>
+          {isFavorite ? (
+            <Button variant="danger" onClick={handleClick("remove")}>
+              Remove from favorites
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={handleClick("add")}>
+              Add to favorites
+            </Button>
+          )}
+        </Box>
+      </Flex>
+      <Box>
         <h2 className="font-bold text-xl mb-2">{title}</h2>
         <p className="text-gray-700 text-base">{description}</p>
-        <Flex justify="between" align="center">
-          <Flex>
+        <Flex direction="col">
             {hasViewMore && (
               <Link
                 href={`${pathname}/detail/${id}`}
@@ -55,40 +63,18 @@ const Book = ({ book, hasViewMore = true }: OwnProps) => {
               </Link>
             )}
             {reviews?.length ? (
-              <>
-                <Text>{reviews[0].message}</Text>
-                <Text>{reviews[0].rating}</Text>
-                <Text>{reviews[0].lastUpdated}</Text>
-                <Link
-                  href={`${pathname}/reviews/${id}`}
-                  className="hover:blue-300 text-primary font-bold"
-                >
-                  View all reviews
-                </Link>
-              </>
-            ) : (
-              <Link
+              <Review id={id} reviews={reviews} />
+            ) : 
+              !hasWriteReview ? null :<Link
                 href={`${pathname}/reviews/${id}`}
                 className="hover:blue-300 text-primary font-bold"
               >
                 Write a review
               </Link>
-            )}
-          </Flex>
-          <Flex>
-            {isFavorite ? (
-              <Button variant="danger" onClick={handleClick("remove")}>
-                Remove from favorites
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={handleClick("add")}>
-                Add to favorites
-              </Button>
-            )}
-          </Flex>
+            }
         </Flex>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

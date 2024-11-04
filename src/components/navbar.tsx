@@ -22,8 +22,8 @@ const Navbar = () => {
   const isReview = pathname.includes("/reviews");
 
   const secondaryNavItems = [
-    { id: "1", name: "Detail", route: `${pathname}/detail/1` }, // replace '1' with dynamic ID as needed
-    { id: "2", name: "Reviews", route: `${pathname}/reviews/1` }, // replace '1' with dynamic ID as needed
+    { id: "1", name: "Detail", route: `${pathname}/detail/1` },
+    { id: "2", name: "Reviews", route: `${pathname}/reviews/1` },
   ];
 
   return (

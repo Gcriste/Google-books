@@ -8,13 +8,14 @@ type VolumeInfo = {
   };
 };
 
- type Review = {
+ export type Review = {
+  title: string;
   message: string;
   lastUpdated: string;
-  rating: string;
+  rating: number;
 };
 
-export type Book = {
+export type BookType = {
   id: string;
   isFavorite?: boolean;
   volumeInfo: VolumeInfo;
@@ -22,5 +23,5 @@ export type Book = {
 };
 
 export type SavedBook = {
-  [key: string]: Book;
+  [key: string]: BookType;
 };

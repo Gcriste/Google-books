@@ -2,13 +2,16 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Book from "./shared/book";
 import { Container } from "./common";
+import { useApi } from "@/api";
+import { BookType } from "@/app/types";
 const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
 const DetailPage = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [book, setBook] = useState<Book | undefined>(undefined);
+  const [book, setBook] = useState<BookType | undefined>(undefined);
+  const { getBookById } = useApi();
   console.log("id", { id, apiKey });
   const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
 
@@ -31,9 +34,13 @@ const DetailPage = () => {
     fetchBook();
   }, [id, apiKey]);
 
+  const currentBook = getBookById(id as string) ?? book;
+
+  console.log("review", currentBook)
+
   return (
     <Container title="Details">
-      {book && <Book book={book} hasViewMore={false} />}
+      {currentBook && <Book book={currentBook} hasViewMore={false} />}
       {loading && <p className="mt-4">Loading...</p>}
       {error && <p className="mt-4 text-red-500">{error}</p>}
     </Container>
