@@ -41,7 +41,7 @@ const Navbar = () => {
               key={item.name}
               href={item.route}
               className={`px-3 py-2 rounded-md text-lg font-medium ${
-                pathname === item.route ? "bg-secondary text-accent" : "hover:text-accent text-primary"
+                pathname === item.route ? "bg-secondary text-white" : "hover:text-accent text-primary"
               } transition duration-200`}
             >
               {item.name}

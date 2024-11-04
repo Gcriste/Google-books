@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
-type ButtonProps = {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   onClick?: () => void; // Function to handle click events
   children: React.ReactNode; // Content to be displayed inside the button
   variant?: 'primary' | 'secondary' | 'outline' | 'danger'; // Define button variants
@@ -16,6 +16,7 @@ const Button = ({
   size = 'medium',
   disabled = false,
   className = '',
+  ...rest
 } : ButtonProps) => {
   // Define base button styles
   const baseStyles = 'rounded focus:outline-none transition duration-200';
@@ -40,6 +41,7 @@ const Button = ({
       onClick={onClick}
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       disabled={disabled}
+      {...rest}
     >
       {children}
     </button>

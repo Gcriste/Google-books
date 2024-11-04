@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../styles/globals.css";
 import Navbar from "@/components/navbar";
-import BookContextProvider from "@/context/provider";
 
 const geistSans = localFont({
   src: "../styles/fonts/GeistVF.woff",
@@ -17,7 +16,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Google Books",
-  description: "Google Books api application",
+  description: "Google Books API application",
 };
 
 export default function RootLayout({
