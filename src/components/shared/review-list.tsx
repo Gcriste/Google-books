@@ -12,8 +12,8 @@ type OwnProps = {
 
 const ReviewList = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
   const pathname = usePathname();
-
-  const reviewList = hasViewAllReviews ? reviews : [reviews?.[0] as Review];
+console.log('hasAll', {hasViewAllReviews, reviews})
+  const reviewList = hasViewAllReviews ? [reviews?.[0] as Review] : reviews ;
   return reviewList?.map(({ id, rating, title, lastUpdated, message }, idx) => (
     <Box key={id} >
       {/* {idx !== 0 && reviewList.length > 1 ? <Divider /> : null} */}

@@ -19,31 +19,28 @@ const Book = ({
   hasViewAllReviews = false,
 }: OwnProps) => {
   const pathname = usePathname().split("/")[1];
-  const { updateBook, getBookById } = useApi();
-  const [currentBook, setCurrentBook] = useState<BookType>(
-    getBookById(book.id as string) ?? book
+  const { updateBook } = useApi();
+  const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
+    book.isFavorite
   );
 
   const {
     id,
-    isFavorite,
     reviews,
     volumeInfo: { title, description, imageLinks },
-  } = currentBook;
+  } = book;
 
   const handleClick = useCallback(
     (action: "add" | "remove") => () => {
-      console.log("clicked", { book, currentBook });
+      console.log("clicked", { book });
       const isFavorite = action === "add";
-      updateBook({ ...currentBook, isFavorite });
-      setCurrentBook((prev) => ({ ...prev, isFavorite }));
+      updateBook({ ...book, isFavorite });
+      setIsFavorite((prev) => !prev);
     },
     []
   );
 
-  const isDetail = pathname.includes("/detail");
-  const isReview = pathname.includes("/reviews");
-  console.log("pathname", { pathname, isDetail, isReview });
+  console.log("book inside", { book });
 
   return (
     <Box>

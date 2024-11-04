@@ -58,6 +58,7 @@ const ReviewsPage = () => {
     }
 
     const formattedDate = format(new Date(), 'MMMM dd, yyyy')
+    console.log('currentBook', {reviewText , title})
     updateBook({
       ...(currentBook ?? {}) as BookType,
       id: id as string,
