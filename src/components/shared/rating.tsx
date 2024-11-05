@@ -3,7 +3,7 @@ import { Button, Flex } from "../common";
 type OwnProps = {
   rating: number;
   handleRatingClick?: (selectedRating: number) => void;
-  pointerOnHover?: boolean
+  pointerOnHover?: boolean;
 };
 
 const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
@@ -27,4 +27,4 @@ const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
   );
 };
 
-export default Rating
+export default Rating;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import BookList from "./book-list";
-import { Text } from "../common";
+import { Box, Text } from "../common";
 import { useApi } from "@/api";
 
 type OwnProps = {
@@ -17,7 +17,7 @@ const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
   const booksWithReviews = savedBooks.filter((book) => !!book.reviews?.length);
 
   return (
-    <div className=" mx-auto mt-10">
+    <Box>
       {favoriteBooks.length || booksWithReviews.length ? (
         <BookList books={isFavorites ? favoriteBooks : booksWithReviews} />
       ) : (
@@ -25,7 +25,7 @@ const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
           {isFavorites ? "No favorites selected" : "No reviews written"}
         </Text>
       )}
-    </div>
+    </Box>
   );
 };
 

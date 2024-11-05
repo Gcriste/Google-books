@@ -1,7 +1,7 @@
 import { Container } from "@/components/common";
 import SavedBooksContainer from "@/components/shared/saved-books-container";
 
-const MyReviews = () => {
+const MyReviewsPage = () => {
   return (
     <Container title="My Reviews">
       <SavedBooksContainer />
@@ -9,4 +9,4 @@ const MyReviews = () => {
   );
 };
 
-export default MyReviews;
+export default MyReviewsPage;

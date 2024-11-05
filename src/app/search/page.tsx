@@ -1,9 +1,9 @@
 "use client";
 
-import HomePageContainer from "../page";
+import HomePage from "../page";
 
-const SearchPageContainer = () => {
-  return <HomePageContainer />;
+const SearchPage = () => {
+  return <HomePage />;
 };
 
-export default SearchPageContainer;
+export default SearchPage;

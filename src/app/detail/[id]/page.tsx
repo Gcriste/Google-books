@@ -1,9 +1,12 @@
+"use client"
+
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Book from "./shared/book";
-import { Container } from "./common";
+
 import { useApi } from "@/api";
 import { BookType } from "@/app/types";
+import { Container } from "@/components/common";
+import Book from "@/components/shared/book";
 const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
 const DetailPage = () => {
@@ -38,8 +41,8 @@ const DetailPage = () => {
   console.log("review", currentBook)
 
   return (
-    <Container title="Details">
-      {currentBook && <Book book={currentBook}/>}
+    <Container title="Book Details">
+      {currentBook && <Book book={currentBook} isViewMore />}
       {loading && <p className="mt-4">Loading...</p>}
       {error && <p className="mt-4 text-red-500">{error}</p>}
     </Container>

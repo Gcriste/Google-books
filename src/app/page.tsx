@@ -1,6 +1,5 @@
 "use client";
 import { Container } from "@/components/common";
-import BookContextProvider from "@/context/provider";
 import SearchFormContainer from "@/components/search/search-form-container";
 import BookList from "@/components/shared/book-list";
 import { useBookContext } from "@/context/use-book-context";
@@ -13,19 +12,12 @@ const HomePage = () => {
   const updatedBooks = searchedBooks.map((book) => getBookById(book.id) ?? book);
 console.log('updatedBooks', updatedBooks)
   return (
-    <Container title="Search">
+    <Container title="Book Search">
       <SearchFormContainer />
-      <BookList books={updatedBooks} />
+      <BookList books={updatedBooks} isSearch />
     </Container>
   );
 };
 
-const HomePageContainer = () => {
-  return (
-    <BookContextProvider>
-      <HomePage />
-    </BookContextProvider>
-  );
-};
 
-export default HomePageContainer;
+export default HomePage;

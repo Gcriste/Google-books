@@ -1,21 +1,21 @@
 import Book from "./book";
 import { Box, Divider } from "../common";
 import { BookType } from "@/app/types";
-import { usePathname } from "next/navigation";
 
-type OwnProps = { books: BookType[] };
+type OwnProps = { books: BookType[], isSearch?: boolean };
 
-const BookList = ({ books }: OwnProps) => {
+const BookList = ({ books, isSearch }: OwnProps) => {
+  const keyStr = isSearch ? 'search' : 'favorites'
   return (
-    <div className="mt-4">
+    <Box>
       {books.length > 0 &&
-        books.map((book) => (
-          <Box key={book.id}>
-            <Divider />
+        books.map((book,idx) => (
+          <Box key={`${keyStr}-${book.id}`}>
+            {idx !==0 &&<Divider />}
             <Book book={book}/>
           </Box>
         ))}
-    </div>
+    </Box>
   );
 };
 

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent } from "react";
-import { Button, Flex } from "../common";
+import { Box, Button, Flex } from "../common";
 
 type OwnProps = {
   handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -9,17 +9,17 @@ type OwnProps = {
 
 const SearchForm = ({ handleSubmit, handleChange, searchStr }: OwnProps) => {
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col">
-      <Flex gap="gap-4" direction="col">
+    <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+      <Flex gap="gap-0" className='w-full'>
         <input
           type="text"
           value={searchStr}
           onChange={handleChange}
           placeholder="Search for books..."
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" className="min-w-[150px]">
           Search
         </Button>
       </Flex>

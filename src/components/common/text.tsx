@@ -3,7 +3,7 @@ import React from 'react';
 
 interface TextProps {
   variant?: 'heading' | 'subheading' | 'body' | 'caption';
-  size?: 'small' | 'medium' | 'large'
+  size?: 'small' | 'medium' | 'large' | 'xLarge'
   children: React.ReactNode;
   className?: string; 
 }
@@ -17,7 +17,7 @@ const Text: React.FC<TextProps> = ({
   const baseStyles = `${className}`;
 
   const variantStyles = {
-    heading: 'font-bold text-gray-800',
+    heading: 'font-semibold text-gray-800',
     subheading: 'font-semibold text-gray-700',
     body: 'text-gray-600',
     caption: 'text-gray-500 text-sm',
@@ -27,6 +27,7 @@ const Text: React.FC<TextProps> = ({
     small: 'text-sm',
     medium: 'text-base',
     large: 'text-xl',
+    xLarge: 'text-2xl'
   };
 
   return (
