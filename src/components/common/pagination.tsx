@@ -19,13 +19,13 @@ type PaginationProps = {
         onPageChange(page);
       }
     };
-  
+  console.log('currentPage', currentPage)
     return (
       <Box className="flex items-center justify-center space-x-2">
         <Button
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 rounded-md text-gray-600 bg-white hover:bg-gray-100 disabled:opacity-50"
+       variant="outline"
         >
           &lt;
         </Button>
@@ -35,11 +35,11 @@ type PaginationProps = {
           <Button
             key={page}
             onClick={() => handlePageClick(page)}
-            className={`px-4 py-2 rounded-md ${
+            variant={
               page === currentPage
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600 hover:bg-blue-100"
-            }`}
+                ? "primary"
+                : "outline"
+           }
           >
             {page}
           </Button>
@@ -49,7 +49,7 @@ type PaginationProps = {
         <Button
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-md text-gray-600 bg-white hover:bg-gray-100 disabled:opacity-50"
+          variant="outline"
         >
           &gt;
         </Button>

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { Button, Flex } from "../common";
 import { FormValues } from "@/app/types";
 
@@ -9,7 +9,6 @@ type OwnProps = {
 };
 
 const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
-  const { register,     formState: { errors }, } = useForm<FormValues>();
   return (
     <Flex align="center" gap="gap-1">
       {[1, 2, 3, 4, 5].map((num) => (
@@ -21,13 +20,11 @@ const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
           className={`text-2xl ${
             num <= rating ? "text-yellow-400" : "text-gray-300"
           }`}
-          {...register("rating")}
           onClick={() => handleRatingClick?.(num)}
         >
           ★
         </Button>
       ))}
-         {errors.title && <p className="text-red-500">{errors.rating?.message}</p>}
     </Flex>
   );
 };

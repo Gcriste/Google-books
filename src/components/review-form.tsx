@@ -6,10 +6,7 @@ import { useApi } from "@/api";
 import { BookType, FormValues } from "@/app/types";
 import { format } from "date-fns/format";
 import { Button, Flex, Text } from "./common";
-import {
-  UseMutateFunction,
-  useQuery,
-} from "@tanstack/react-query";
+import { UseMutateFunction, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 type OwnProps = {
@@ -33,6 +30,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
     reset,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -42,7 +40,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
     },
   });
 
-const rating = watch('rating')
+  const rating = watch("rating");
   const {
     data: bookData,
     isLoading,
@@ -56,12 +54,18 @@ const rating = watch('rating')
   const currentBook = getBookById(id as string) ?? bookData;
 
   const handleRatingClick = (selectedRating: number) => {
-    setValue("rating", selectedRating);
+    setValue("rating", selectedRating, { shouldValidate: true });
   };
 
   const onSubmit = (data: FormValues) => {
-    console.log('on submit runs')
-    const {title, reviewText, rating} = data
+    if (data.rating === 0) {
+      setError("rating", {
+        type: "manual",
+        message: "Rating is required",
+      });
+      return;
+    }
+    const { title, reviewText, rating } = data;
     const formattedDate = format(new Date(), "MMMM dd, yyyy");
     updateBookFromStorage({
       ...((currentBook ?? {}) as BookType),
@@ -77,16 +81,20 @@ const rating = watch('rating')
         },
       ],
     });
-    reset()
+    reset();
   };
-console.log('errors', errors)
+
   return (
     <Flex direction="col" gap="gap-2">
-      <Text variant="heading" size="large">
+      <Text variant="heading" size="xLarge">
         Leave a Review
       </Text>
+
+      <Rating rating={rating} handleRatingClick={handleRatingClick} />
+      {errors?.rating && (
+        <p className="text-red-500">{errors?.rating.message}</p>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Rating rating={rating} handleRatingClick={handleRatingClick} />
         <input
           {...register("title", { required: "Title is required" })}
           placeholder="Write your title"

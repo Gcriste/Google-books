@@ -9,6 +9,7 @@ type FlexProps = {
   gap?: string;
   className?: string;
   maxWidth?: string; 
+  minHeight?: string
 } & HTMLAttributes<HTMLDivElement>; 
 
 const Flex = ({
@@ -19,7 +20,8 @@ const Flex = ({
   wrap = false,
   gap = 'gap-4',
   className = '',
-  maxWidth, 
+  maxWidth,
+  minHeight,
   ...rest
 }: FlexProps) => {
   return (
@@ -27,7 +29,7 @@ const Flex = ({
       className={`flex flex-${direction} items-${align} justify-${justify} ${
         wrap ? 'flex-wrap' : ''
       } ${gap} ${className}`}
-      style={{ maxWidth }} 
+      style={{ maxWidth, minHeight }} 
       {...rest} 
     >
       {children}
