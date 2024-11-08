@@ -3,8 +3,8 @@ import localFont from "next/font/local";
 import "../styles/globals.css";
 import Navbar from "@/components/navbar";
 import BookContextProvider from "@/context/provider";
-import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import ReactQueryProvider from "./query-client";
+import Footer from "@/components/common/footer";
 
 const geistSans = localFont({
   src: "../styles/fonts/GeistVF.woff",
@@ -22,8 +22,6 @@ export const metadata: Metadata = {
   description: "Google Books API application",
 };
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,12 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <ReactQueryProvider>
           <BookContextProvider>
             <Navbar />
-            {children}
+            <main className="flex-grow">{children}</main>
+            <Footer />
           </BookContextProvider>
         </ReactQueryProvider>
       </body>

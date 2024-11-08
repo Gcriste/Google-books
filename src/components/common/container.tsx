@@ -1,7 +1,6 @@
 import React, { FC, PropsWithChildren } from "react";
 import Text from "./text";
 import Flex from "./flex";
-import Divider from "./divider";
 
 type ContainerProps = PropsWithChildren & {
   title: string;
