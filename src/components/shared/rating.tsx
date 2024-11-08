@@ -9,7 +9,7 @@ type OwnProps = {
 };
 
 const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
-  const { register } = useForm<FormValues>();
+  const { register,     formState: { errors }, } = useForm<FormValues>();
   return (
     <Flex align="center" gap="gap-1">
       {[1, 2, 3, 4, 5].map((num) => (
@@ -27,6 +27,7 @@ const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
           ★
         </Button>
       ))}
+         {errors.title && <p className="text-red-500">{errors.rating?.message}</p>}
     </Flex>
   );
 };

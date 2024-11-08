@@ -1,18 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
 import Rating from "./shared/rating";
 import { useApi } from "@/api";
 import { BookType, FormValues } from "@/app/types";
 import { format } from "date-fns/format";
-import Book from "./shared/book";
-import { Box, Button, Flex, Text } from "./common";
+import { Button, Flex, Text } from "./common";
 import {
   UseMutateFunction,
-  useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
@@ -83,7 +79,7 @@ const rating = watch('rating')
     });
     reset()
   };
-
+console.log('errors', errors)
   return (
     <Flex direction="col" gap="gap-2">
       <Text variant="heading" size="large">
