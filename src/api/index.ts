@@ -1,9 +1,10 @@
 import { BookType, SavedBook } from "@/app/types";
 
-export const useApi = () => {
-  const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
+const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
-  const fetchBooks = async (searchStr: string) => {
+export const useApi = () => {
+
+  const searchBooks = async (searchStr: string): Promise<BookType[]> => {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${searchStr}&key=${apiKey}`;
     const response = await fetch(url);
     if (!response.ok) {
@@ -13,6 +14,17 @@ export const useApi = () => {
     console.log('data', data)
     return data.items || [];
   };
+
+  const getBookDetails = async(id: string): Promise<BookType> =>{
+    const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch books");
+      }
+      const data = response.json()
+      return data
+  }
 
   const getAll = () => {
     const currentBooks = localStorage.getItem("savedBooks") ?? "{}";
@@ -38,5 +50,5 @@ export const useApi = () => {
     return updatedBook;
   };
 
-  return { fetchBooks, getAll, getBookById, updateBook };
+  return { searchBooks, getBookDetails, getAll, getBookById, updateBook };
 };

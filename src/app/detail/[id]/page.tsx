@@ -7,44 +7,31 @@ import { useApi } from "@/api";
 import { BookType } from "@/app/types";
 import { Container } from "@/components/common";
 import Book from "@/components/shared/book";
+import { useQuery } from "@tanstack/react-query";
 const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
 const DetailPage = () => {
   const { id } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [book, setBook] = useState<BookType | undefined>(undefined);
-  const { getBookById } = useApi();
-  const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
+  const { getBookDetails, getBookById } = useApi();
+  const {
+    data: bookData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["bookDetails"],
+    queryFn: () => getBookDetails(id as string),
+    enabled: !!id,
+  });
 
-  useEffect(() => {
-    const fetchBook = async () => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch books");
-        }
-        const data = await response.json();
-        console.log("data", { data });
-        setBook(data);
-      } catch (err) {
-        setError(err as any);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBook();
-  }, [id, apiKey]);
-
-  const currentBook = getBookById(id as string) ?? book;
+  const currentBook = getBookById(id as string) ?? bookData;
 
   console.log("review", currentBook)
 
   return (
     <Container title="Book Details">
       {currentBook && <Book book={currentBook} isViewMore />}
-      {loading && <p className="mt-4">Loading...</p>}
-      {error && <p className="mt-4 text-red-500">{error}</p>}
+      {isLoading && <p className="mt-4">Loading...</p>}
+      {error && <p className="mt-4 text-red-500">{error.message}</p>}
     </Container>
   );
 };

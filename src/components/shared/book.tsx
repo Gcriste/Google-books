@@ -9,12 +9,9 @@ import { UseMutateFunction } from "@tanstack/react-query";
 type OwnProps = {
   book: BookType;
   isViewMore?: boolean;
-  updateBookFromStorage?:  UseMutateFunction<{
-    [x: string]: BookType ;
-  }, Error, BookType, unknown>
 };
 
-const Book = ({ book, isViewMore, updateBookFromStorage }: OwnProps) => {
+const Book = ({ book, isViewMore }: OwnProps) => {
   const { updateBook } = useApi();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
     book.isFavorite
@@ -35,8 +32,6 @@ const Book = ({ book, isViewMore, updateBookFromStorage }: OwnProps) => {
     },
     []
   );
-
-  console.log("book inside", { book, isViewMore });
 
   return (
     <>
@@ -69,7 +64,6 @@ const Book = ({ book, isViewMore, updateBookFromStorage }: OwnProps) => {
           bookId={id}
           reviews={reviews}
           hasViewAllReviews={false}
-          updateBookFromStorage={updateBookFromStorage}
         />
       ) : (
         <Link

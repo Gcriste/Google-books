@@ -11,9 +11,6 @@ type OwnProps = {
   bookId: string;
   reviews?: Review[];
   hasViewAllReviews: boolean;
-  updateBookFromStorage?:  UseMutateFunction<{
-    [x: string]: BookType ;
-  }, Error, BookType, unknown>
 };
 
 const ReviewContainer = ({ bookId, reviews, hasViewAllReviews,  }: OwnProps) => {

@@ -11,37 +11,34 @@ type OwnProps = {
 };
 
 const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
-  const {getAll} = useApi()
-  const { data: currentBooks = {}, refetch } = useQuery({queryKey: ["books"], queryFn: getAll});
-
-  useEffect(() => {
-    refetch(); // Refetch books to ensure data is up-to-date
-  }, [currentBooks]);
+  const { getAll } = useApi();
+  const { data: currentBooks = {} } = useQuery({
+    queryKey: ["savedBooks"],
+    queryFn: getAll,
+  });
 
   const savedBooks = Object.values(currentBooks);
   const favoriteBooks = savedBooks.filter((book) => book.isFavorite);
   const booksWithReviews = savedBooks.filter((book) => !!book.reviews?.length);
 
-console.log('booksWithReviews', {booksWithReviews})
-const favorites = {
-  hasLength: favoriteBooks.length,
-  emptyText: "No favorites selected"
-}
+  console.log("booksWithReviews", { booksWithReviews });
+  const favorites = {
+    hasLength: favoriteBooks.length,
+    emptyText: "No favorites selected",
+  };
 
-const reviews = {
-  hasLength: booksWithReviews.length,
-  emptyText:  "No reviews written"
-}
+  const reviews = {
+    hasLength: booksWithReviews.length,
+    emptyText: "No reviews written",
+  };
 
-const {hasLength, emptyText} = isFavorites ? favorites : reviews
+  const { hasLength, emptyText } = isFavorites ? favorites : reviews;
   return (
     <Box>
       {hasLength ? (
         <BookList books={isFavorites ? favoriteBooks : booksWithReviews} />
       ) : (
-        <Text>
-          {emptyText}
-        </Text>
+        <Text>{emptyText}</Text>
       )}
     </Box>
   );

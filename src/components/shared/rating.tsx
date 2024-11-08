@@ -1,4 +1,6 @@
+import { useForm } from "react-hook-form";
 import { Button, Flex } from "../common";
+import { FormValues } from "@/app/types";
 
 type OwnProps = {
   rating: number;
@@ -7,6 +9,7 @@ type OwnProps = {
 };
 
 const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
+  const { register } = useForm<FormValues>();
   return (
     <Flex align="center" gap="gap-1">
       {[1, 2, 3, 4, 5].map((num) => (
@@ -18,6 +21,7 @@ const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
           className={`text-2xl ${
             num <= rating ? "text-yellow-400" : "text-gray-300"
           }`}
+          {...register("rating")}
           onClick={() => handleRatingClick?.(num)}
         >
           ★

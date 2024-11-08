@@ -26,3 +26,12 @@ export type BookType = {
 export type SavedBook = {
   [key: string]: BookType;
 };
+
+
+
+export type FormValues = {
+  searchStr: string;
+  title: string;
+  reviewText: string;
+  rating: number;
+};
