@@ -7,10 +7,26 @@ import { useApi } from "@/api";
 import { BookType } from "@/app/types";
 import { format } from "date-fns/format";
 import Book from "./shared/book";
-import {Box, Button, Flex, Text} from './common'
+import { Box, Button, Flex, Text } from "./common";
+import {
+  UseMutateFunction,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 const apiKey = "AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU";
 
-const ReviewForm = () => {
+type OwnProps = {
+  updateBookFromStorage: UseMutateFunction<
+    {
+      [x: string]: BookType;
+    },
+    Error,
+    BookType,
+    unknown
+  >;
+};
+
+const ReviewForm = ({updateBookFromStorage}: OwnProps) => {
   const { id } = useParams();
   const [rating, setRating] = useState<number>(0);
   const [title, setTitle] = useState<string>("");
@@ -18,7 +34,7 @@ const ReviewForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [book, setBook] = useState<BookType | undefined>(undefined);
-  const { updateBook, getBookById } = useApi();
+  const { getBookById } = useApi();
 
   const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`;
 
@@ -58,23 +74,32 @@ const ReviewForm = () => {
       return;
     }
 
-    const formattedDate = format(new Date(), 'MMMM dd, yyyy')
-    updateBook({
-      ...(currentBook ?? {}) as BookType,
+    const formattedDate = format(new Date(), "MMMM dd, yyyy");
+    updateBookFromStorage({
+      ...((currentBook ?? {}) as BookType),
       id: id as string,
       reviews: [
         ...(currentBook?.reviews ?? []),
-        { id: crypto.randomUUID(), title, message: reviewText, rating, lastUpdated: formattedDate },
+        {
+          id: crypto.randomUUID(),
+          title,
+          message: reviewText,
+          rating,
+          lastUpdated: formattedDate,
+        },
       ],
     });
     setError("");
     setReviewText("");
+    setTitle("")
     setRating(0);
   };
 
   return (
     <Flex direction="col" gap="gap-2">
-      <Text variant="heading" size="large">Leave a Review</Text>
+      <Text variant="heading" size="large">
+        Leave a Review
+      </Text>
       {/* Rating Section */}
       <Rating rating={rating} handleRatingClick={handleRatingClick} />
       {/* Title */}

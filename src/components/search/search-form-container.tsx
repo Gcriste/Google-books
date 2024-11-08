@@ -1,54 +1,64 @@
-import { useCallback, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import SearchForm from "./search-form";
 import { useBookContext } from "@/context/use-book-context";
-
-const apiKey = 'AIzaSyDZxit5qyOmEAoxRG8W2r1Hi5B0X8eLoiU'
+import { useApi } from "@/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const SearchFormContainer = () => {
-
+  const { fetchBooks } = useApi();
   const { setSearchedBooks } = useBookContext();
   const [searchStr, setSearchStr] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchStr(event.target.value);
+  const {
+    mutate,
+    data: searchedBooks,
+    isError,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: fetchBooks,
+    onSuccess: (data) => {
+      setSearchedBooks(data);
     },
-    []
-  );
+    onError: (err) => {
+      console.error("Search error", err);
+    },
+  });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchStr(event.target.value);
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
-    setError("");
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${searchStr}&${apiKey}`;
-    console.log("apiKey", { apiKey, url, env: process.env });
-    try {
-      console.log("query", searchStr);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch books");
-      }
-      const data = await response.json();
-      console.log("data", { data });
-      setSearchedBooks(data.items || []);
-    } catch (err) {
-      setError(err as any);
-    } finally {
-      setLoading(false);
-    }
+    mutate(searchStr);
   };
 
   return (
     <>
       <SearchForm
-        handleChange={handleChange}
         handleSubmit={handleSubmit}
+        handleChange={handleChange}
         searchStr={searchStr}
       />
-      {loading && <p className="mt-4">Loading...</p>}
-      {error && <p className="mt-4 text-red-500">{error}</p>}
+
+      {isPending && <p className="mt-4">Loading...</p>}
+      {error && <p className="mt-4 text-red-500">{(error as Error).message}</p>}
+
+      {/* You can render searchedBooks here if needed */}
+      {searchedBooks && searchedBooks.length > 0 && (
+        <ul>
+          {searchedBooks.map((book: any) => (
+            <li key={book.id}>{book.volumeInfo.title}</li>
+          ))}
+        </ul>
+      )}
     </>
   );
 };

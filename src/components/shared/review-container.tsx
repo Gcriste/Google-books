@@ -1,19 +1,35 @@
 import Link from "next/link";
 import { Box, Divider, Flex, Text } from "../common";
-import { Review } from "@/app/types";
+import { BookType, Review } from "@/app/types";
 import { usePathname } from "next/navigation";
 import Rating from "./rating";
 import ReviewForm from "../review-form";
+import { UseMutateFunction, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApi } from "@/api";
+import { useState } from "react";
 type OwnProps = {
   bookId: string;
   reviews?: Review[];
   hasViewAllReviews: boolean;
+  updateBookFromStorage?:  UseMutateFunction<{
+    [x: string]: BookType ;
+  }, Error, BookType, unknown>
 };
 
-const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
-  const pathname = usePathname().split("/")[1];
-  console.log("hasAll", { hasViewAllReviews, reviews });
-  const reviewList = hasViewAllReviews ? [reviews?.[0] as Review] : reviews;
+const ReviewContainer = ({ bookId, reviews, hasViewAllReviews,  }: OwnProps) => {
+  const { updateBook } = useApi();
+  const [reviewList, setReviewList] = useState<Review[]>(
+    hasViewAllReviews ? [reviews?.[0] as Review] : reviews || []
+  );
+  const { mutate: updateBookFromStorage } = useMutation({
+    mutationFn: updateBook, // Now returns a Promise<updatedBooks>
+    onSuccess: (updatedBooks) => {
+      console.log('does this run', {updatedBooks})
+      setReviewList(updatedBooks[bookId]?.reviews || []);
+    },
+  });
+
+  console.log("reviewList", reviewList)
   return (
     <>
       <Flex direction="col" gap="gap-2">
@@ -25,8 +41,6 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
             reviewList?.map(
               ({ id, rating, title, lastUpdated, message }, idx) => (
                 <Box key={id}>
-                  {/* {idx !== 0 && reviewList.length > 1 ? <Divider /> : null} */}
-
                   <Flex direction="col">
                     <Flex align="center" justify="between">
                       <Flex align="center">
@@ -38,17 +52,6 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
 
                     <Flex justify="between">
                       <Text>{message}</Text>
-                      {/* {hasViewAllReviews && idx === reviewList.length - 1 && (
-                        <Link
-                          href={`/${pathname}/reviews/${bookId}`}
-                          className="hover:blue-300 text-primary font-bold"
-                        >
-                          View all reviews
-                          {reviews?.length
-                            ? `(${reviews?.length - 1} more)`
-                            : null}
-                        </Link>
-                      )} */}
                     </Flex>
                   </Flex>
                 </Box>
@@ -59,7 +62,7 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
           )}
         </Flex>
       </Flex>
-      <ReviewForm />
+    <ReviewForm updateBookFromStorage={updateBookFromStorage}/>
     </>
   );
 };
