@@ -1,11 +1,11 @@
-import React, { FC, PropsWithChildren } from "react";
-import Text from "./text";
-import Flex from "./flex";
+import { FC, PropsWithChildren } from 'react'
+import Text from './text'
+import Flex from './flex'
 
 type ContainerProps = PropsWithChildren & {
-  title: string;
-  subtitle?: string;
-};
+  title: string
+  subtitle?: string
+}
 
 const Container: FC<ContainerProps> = ({ title, subtitle, children }) => {
   return (
@@ -17,10 +17,14 @@ const Container: FC<ContainerProps> = ({ title, subtitle, children }) => {
       <Text variant="heading" size="xLarge">
         {title}
       </Text>
-      {subtitle && <Text variant="subheading" size="large">{subtitle}</Text>}
+      {subtitle && (
+        <Text variant="subheading" size="large">
+          {subtitle}
+        </Text>
+      )}
       {children}
     </Flex>
-  );
-};
+  )
+}
 
-export default Container;
+export default Container

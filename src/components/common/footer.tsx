@@ -1,5 +1,5 @@
-import Box from "./box";
-import Flex from "./flex";
+import Box from './box'
+import Flex from './flex'
 
 const Footer = () => {
   return (
@@ -11,7 +11,7 @@ const Footer = () => {
         </Box>
       </footer>
     </Flex>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

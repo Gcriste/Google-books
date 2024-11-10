@@ -1,8 +1,8 @@
-import { Box, Flex } from "../common";
+import { Box, Flex } from '../common'
 
 type OwnProps = {
-  isDetails?: boolean;
-};
+  isDetails?: boolean
+}
 
 const BookSkeleton = ({ isDetails }: OwnProps) => {
   return (
@@ -31,7 +31,7 @@ const BookSkeleton = ({ isDetails }: OwnProps) => {
         </Flex>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default BookSkeleton;
+export default BookSkeleton

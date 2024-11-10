@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { Menu, MenuItem, MenuItems } from "@headlessui/react";
-import { FaBars, FaTimes } from "react-icons/fa";
-import { Box, Button, Divider } from "./common";
+import { useCallback, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { Menu, MenuItem, MenuItems } from '@headlessui/react'
+import { FaBars, FaTimes } from 'react-icons/fa'
+import { Box, Button } from './common'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
-  const toggleMenu = () => setIsOpen((prev) => !prev);
+  const toggleMenu = useCallback(() => setIsOpen(prev => !prev), [])
 
   const primaryNavItems = [
-    { name: "Search", route: "/search", secondaryRoute: "/" },
-    { name: "Favorites", route: "/favorites" },
-    { name: "My Reviews", route: "/my-reviews" },
-  ];
+    { name: 'Search', route: '/search', secondaryRoute: '/' },
+    { name: 'Favorites', route: '/favorites' },
+    { name: 'My Reviews', route: '/my-reviews' }
+  ]
 
   return (
     <nav className="shadow-lg">
@@ -31,14 +31,14 @@ const Navbar = () => {
 
         {/* Primary Navigation */}
         <Box className="hidden md:flex space-x-4">
-          {primaryNavItems.map((item) => (
+          {primaryNavItems.map(item => (
             <Link
               key={item.name}
               href={item.route}
               className={`px-3 py-2 rounded-md text-lg font-medium ${
                 pathname === item.route || pathname === item.secondaryRoute
-                  ? "bg-secondary text-white hover:text-white"
-                  : "hover:text-accent text-primary"
+                  ? 'bg-secondary text-white hover:text-white'
+                  : 'hover:text-accent text-primary'
               } transition duration-200`}
             >
               {item.name}
@@ -61,29 +61,30 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <Box className="md:hidden">
-        <Menu>
-          <MenuItems static className="px-4 pt-2 pb-3 space-y-1 text-primary">
-            {primaryNavItems.map((item) => (
-              <MenuItem key={item.route}>
-                <Link
-                  href={item.route}
-                  className={`block px-3 py-2 rounded-md text-lg font-medium ${
-                    pathname === item.route || pathname === item.secondaryRoute
-                      ? "bg-secondary text-white hover:text-white"
-                      : "hover:text-accent text-primary"
-                  } transition duration-200`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              </MenuItem>
-            ))}
-          </MenuItems>
-        </Menu>
+          <Menu>
+            <MenuItems static className="px-4 pt-2 pb-3 space-y-1 text-primary">
+              {primaryNavItems.map(item => (
+                <MenuItem key={item.route}>
+                  <Link
+                    href={item.route}
+                    className={`block px-3 py-2 rounded-md text-lg font-medium ${
+                      pathname === item.route ||
+                      pathname === item.secondaryRoute
+                        ? 'bg-secondary text-white hover:text-white'
+                        : 'hover:text-accent text-primary'
+                    } transition duration-200`}
+                    onClick={toggleMenu}
+                  >
+                    {item.name}
+                  </Link>
+                </MenuItem>
+              ))}
+            </MenuItems>
+          </Menu>
         </Box>
       )}
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

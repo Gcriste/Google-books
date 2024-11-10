@@ -1,47 +1,46 @@
-import Link from "next/link";
-import { Box, Button, Divider, Flex, Pagination, Text } from "../common";
-import { BookType, Review } from "@/app/types";
-import { usePathname } from "next/navigation";
-import Rating from "./rating";
-import ReviewForm from "../review-form";
-import {
-  UseMutateFunction,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useApi } from "@/api";
-import { useState } from "react";
+import { Box, Button, Flex, Pagination, Text } from '../common'
+import { Review } from '@/app/types'
+import Rating from './rating'
+import ReviewForm from '../review-form'
+import { useMutation } from '@tanstack/react-query'
+import { useApi } from '@/api'
+import { useCallback, useState } from 'react'
 
 type OwnProps = {
-  bookId: string;
-  reviews?: Review[];
-  isMyReviews?: boolean;
-};
+  bookId: string
+  reviews?: Review[]
+  isMyReviews?: boolean
+}
 
 const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
-  const { updateBook } = useApi();
-  const [reviewList, setReviewList] = useState<Review[]>(reviews || []);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { updateBook } = useApi()
+  const [reviewList, setReviewList] = useState<Review[]>(reviews || [])
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const [showReviews, setShowReviews] = useState<boolean | undefined>(
     isMyReviews
-  );
-  const totalPages = Math.ceil(reviewList.length / 5);
-  const countPerPage = 5;
+  )
+  const totalPages = Math.ceil(reviewList.length / 5)
+  const countPerPage = 5
   const { mutate: updateBookFromStorage } = useMutation({
     mutationFn: updateBook, // Now returns a Promise<updatedBooks>
-    onSuccess: (updatedBooks) => {
-      setReviewList(updatedBooks[bookId]?.reviews || []);
-    },
-  });
+    onSuccess: updatedBooks => {
+      setReviewList(updatedBooks[bookId]?.reviews || [])
+    }
+  })
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-  const currentReviewsList = showReviews ? reviewList : reviewList.slice(0, 1);
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page)
+  }, [])
+
+  const handleShowAllReviews = useCallback(() => {
+    setShowReviews(prev => !prev)
+  }, [])
+
+  const currentReviewsList = showReviews ? reviewList : reviewList.slice(0, 1)
   const slicedReivewList = currentReviewsList.slice(
     (currentPage - 1) * countPerPage,
     currentPage * countPerPage
-  );
+  )
 
   return (
     <>
@@ -51,16 +50,16 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
         </Text>
         <Flex
           direction="col"
-          minHeight={currentReviewsList.length > 5 ? "27em" : "none"}
+          minHeight={currentReviewsList.length > 5 ? '27em' : 'none'}
         >
           {slicedReivewList.length > 0 ? (
             slicedReivewList.map(
-              ({ id, rating, title, lastUpdated, message }, idx) => (
+              ({ id, rating, title, lastUpdated, message }) => (
                 <Box key={id}>
                   <Flex direction="col">
                     <Flex align="center" justify="between">
                       <Flex align="center">
-                        <Rating rating={Number(rating ?? "0")} pointerOnHover />
+                        <Rating rating={Number(rating ?? '0')} pointerOnHover />
                         <Text variant="heading">{title}</Text>
                       </Flex>
                       <Text>Last updated: {lastUpdated}</Text>
@@ -74,7 +73,7 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
                       <Button
                         variant="ghost"
                         className="text-primary font-bold"
-                        onClick={() => setShowReviews((prev) => !prev)}
+                        onClick={handleShowAllReviews}
                       >
                         Show all reviews
                       </Button>
@@ -97,7 +96,7 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
       </Flex>
       <ReviewForm updateBookFromStorage={updateBookFromStorage} />
     </>
-  );
-};
+  )
+}
 
-export default ReviewContainer;
+export default ReviewContainer

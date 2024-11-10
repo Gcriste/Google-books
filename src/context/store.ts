@@ -1,9 +1,9 @@
-import { createContext } from "react";
-import type { BookState } from "./types";
+import { createContext } from 'react'
+import type { BookState } from './types'
 
 const initialState: BookState = {
   searchedBooks: [],
-  setSearchedBooks: () => undefined,
-};
+  setSearchedBooks: () => undefined
+}
 
-export const BookStore = createContext<BookState>(initialState);
+export const BookStore = createContext<BookState>(initialState)

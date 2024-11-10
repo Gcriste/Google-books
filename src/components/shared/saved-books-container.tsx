@@ -1,37 +1,36 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
-import BookList from "./book-list";
-import { Box, Text } from "../common";
-import { useApi } from "@/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import BookList from './book-list'
+import { Box, Text } from '../common'
+import { useApi } from '@/api'
+import { useQuery } from '@tanstack/react-query'
 
 type OwnProps = {
-  isMyReviews?: boolean;
-};
+  isMyReviews?: boolean
+}
 
 const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
-  const { getAll } = useApi();
+  const { getAll } = useApi()
   const { data: currentBooks = {}, isLoading } = useQuery({
-    queryKey: ["savedBooks"],
-    queryFn: getAll,
-  });
+    queryKey: ['savedBooks'],
+    queryFn: getAll
+  })
 
-  const savedBooks = Object.values(currentBooks);
-  const favoriteBooks = savedBooks.filter((book) => book.isFavorite);
-  const booksWithReviews = savedBooks.filter((book) => !!book.reviews?.length);
-  
+  const savedBooks = Object.values(currentBooks)
+  const favoriteBooks = savedBooks.filter(book => book.isFavorite)
+  const booksWithReviews = savedBooks.filter(book => !!book.reviews?.length)
+
   const favorites = {
     hasLength: favoriteBooks.length,
-    emptyText: "No favorites selected",
-  };
+    emptyText: 'No favorites selected'
+  }
 
   const reviews = {
     hasLength: booksWithReviews.length,
-    emptyText: "No reviews written",
-  };
+    emptyText: 'No reviews written'
+  }
 
-  const { hasLength, emptyText } = isMyReviews ? reviews : favorites;
+  const { hasLength, emptyText } = isMyReviews ? reviews : favorites
   return (
     <Box>
       {hasLength ? (
@@ -44,7 +43,7 @@ const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
         <Text>{emptyText}</Text>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default SavedBooksContainer;
+export default SavedBooksContainer
