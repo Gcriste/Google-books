@@ -25,6 +25,8 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:react-perf/all',
     'plugin:@next/next/recommended', 
+    'next',
+    'next/core-web-vitals',
   ],
   plugins: [
     'react',
@@ -43,16 +45,9 @@ module.exports = {
     'react/prop-types': 'off',
     'prettier/prettier': 'error',
     'unused-imports/no-unused-imports': 'error',
-    // You can add more custom rules as per your original config
   },
   settings: {
     alias: {
-      map: [
-        ['@', './src'],             // Root alias
-        ['@/app', './app'],      // Alias for `@/app`
-        ['@/app/types', './app/types'],  // Alias for `@/app/types`
-        ['@/api', './api'],        // Alias for `@/api`
-      ],
       extensions: ['.js', '.jsx', '.ts', '.tsx'], // Add relevant extensions for your project
     },
     react: {
@@ -65,14 +60,6 @@ module.exports = {
     },
   },
   overrides: [
-    {
-      // Override for storybook files
-      files: ['*.stor[ies|y].@(ts|tsx|js|jsx|mjs|cjs)'],
-      rules: {
-        'storybook/default-exports': 'off',
-        'storybook/story-exports': 'off',
-      },
-    },
     {
       // Override for specific folder and file naming convention
       files: ['packages/**/__@(stories|tests)__/**'],
