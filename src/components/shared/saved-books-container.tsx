@@ -12,7 +12,7 @@ type OwnProps = {
 
 const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
   const { getAll } = useApi();
-  const { data: currentBooks = {} } = useQuery({
+  const { data: currentBooks = {}, isLoading } = useQuery({
     queryKey: ["savedBooks"],
     queryFn: getAll,
   });
@@ -36,7 +36,10 @@ const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
   return (
     <Box>
       {hasLength ? (
-        <BookList books={isFavorites ? favoriteBooks : booksWithReviews} />
+        <BookList
+          books={isFavorites ? favoriteBooks : booksWithReviews}
+          isLoading={isLoading}
+        />
       ) : (
         <Text>{emptyText}</Text>
       )}

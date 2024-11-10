@@ -49,7 +49,7 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
         <Text variant="heading" size="xLarge">
           Reviews
         </Text>
-        <Flex direction="col" minHeight={slicedReivewList.length > 0  ? "27em": "none"}>
+        <Flex direction="col" minHeight={reviewList.length > 5  ? "27em": "none"}>
           {slicedReivewList.length > 0 ? (
             slicedReivewList.map(
               ({ id, rating, title, lastUpdated, message }, idx) => (
@@ -74,7 +74,7 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
             <Text>No reviews written yet</Text>
           )}
         </Flex>
-        {slicedReivewList.length > 0 && (
+        {reviewList.length > 5 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

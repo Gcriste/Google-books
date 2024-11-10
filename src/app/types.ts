@@ -1,12 +1,22 @@
 type VolumeInfo = {
   title: string;
-  description: string;
+  subtitle?: string
+  description?: string;
   infoLink: string;
   imageLinks: {
     thumbnail: string;
     title: string;
   };
+  authors?: string[]
+  categories: string[]
+  publisher: string
+  publishedDate: string
 };
+
+type SaleInfo = {
+  buyLink?: string
+  listPrice?: {amount: number, currencyCode: string}
+}
 
  export type Review = {
   id: string
@@ -21,6 +31,8 @@ export type BookType = {
   isFavorite?: boolean;
   volumeInfo: VolumeInfo;
   reviews?: Review[];
+  saleInfo: SaleInfo
+  selfLink: string
 };
 
 export type SavedBook = {

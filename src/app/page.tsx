@@ -1,12 +1,12 @@
 "use client";
 import { Container } from "@/components/common";
-import SearchFormContainer from "@/components/search/search-form-container";
 import BookList from "@/components/shared/book-list";
 import { useApi } from "@/api";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { FormValues } from "./types";
+import SearchForm from "@/components/search/search-form";
 
 const HomePage = () => {
   const { getBookById, searchBooks } = useApi();
@@ -40,12 +40,10 @@ const HomePage = () => {
 
   return (
     <Container title="Book Search">
-      <SearchFormContainer
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-        error={error}
+      <SearchForm
+        onSubmit={handleSubmit}
       />
-      <BookList books={updatedBooks} isSearch />
+      <BookList books={updatedBooks} isLoading={isLoading} />
     </Container>
   );
 };

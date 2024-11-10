@@ -29,8 +29,6 @@ type PaginationProps = {
         >
           &lt;
         </Button>
-  
-        {/* Page Numbers */}
         {pages.map((page) => (
           <Button
             key={page}
@@ -44,8 +42,6 @@ type PaginationProps = {
             {page}
           </Button>
         ))}
-  
-        {/* Next Button */}
         <Button
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage === totalPages}
