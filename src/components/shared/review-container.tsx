@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box, Divider, Flex, Pagination, Text } from "../common";
+import { Box, Button, Divider, Flex, Pagination, Text } from "../common";
 import { BookType, Review } from "@/app/types";
 import { usePathname } from "next/navigation";
 import Rating from "./rating";
@@ -15,15 +15,16 @@ import { useState } from "react";
 type OwnProps = {
   bookId: string;
   reviews?: Review[];
-  hasViewAllReviews: boolean;
+  isMyReviews?: boolean;
 };
 
-const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
+const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
   const { updateBook } = useApi();
-  const [reviewList, setReviewList] = useState<Review[]>(
-    hasViewAllReviews ? [reviews?.[0] as Review] : reviews || []
+  const [reviewList, setReviewList] = useState<Review[]>(reviews || []);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [showReviews, setShowReviews] = useState<boolean | undefined>(
+    isMyReviews
   );
-  const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(reviewList.length / 5);
   const countPerPage = 5;
   const { mutate: updateBookFromStorage } = useMutation({
@@ -36,20 +37,22 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
-  const slicedReivewList = reviewList.slice(
+  const currentReviewsList = showReviews ? reviewList : reviewList.slice(0, 1);
+  const slicedReivewList = currentReviewsList.slice(
     (currentPage - 1) * countPerPage,
     currentPage * countPerPage
   );
 
-  console.log("reviewList", { totalPages, reviewList, currentPage });
   return (
     <>
       <Flex direction="col" gap="gap-2">
         <Text variant="heading" size="xLarge">
           Reviews
         </Text>
-        <Flex direction="col" minHeight={reviewList.length > 5  ? "27em": "none"}>
+        <Flex
+          direction="col"
+          minHeight={currentReviewsList.length > 5 ? "27em" : "none"}
+        >
           {slicedReivewList.length > 0 ? (
             slicedReivewList.map(
               ({ id, rating, title, lastUpdated, message }, idx) => (
@@ -62,11 +65,21 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
                       </Flex>
                       <Text>Last updated: {lastUpdated}</Text>
                     </Flex>
-
                     <Flex justify="between">
                       <Text>{message}</Text>
                     </Flex>
                   </Flex>
+                  {!showReviews && (
+                    <Flex justify="end">
+                      <Button
+                        variant="ghost"
+                        className="text-primary font-bold"
+                        onClick={() => setShowReviews((prev) => !prev)}
+                      >
+                        Show all reviews
+                      </Button>
+                    </Flex>
+                  )}
                 </Box>
               )
             )
@@ -74,7 +87,7 @@ const ReviewContainer = ({ bookId, reviews, hasViewAllReviews }: OwnProps) => {
             <Text>No reviews written yet</Text>
           )}
         </Flex>
-        {reviewList.length > 5 && (
+        {currentReviewsList.length > 5 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

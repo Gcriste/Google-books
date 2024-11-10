@@ -2,7 +2,13 @@ import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
 const config: Config = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/app/**/*.{js,jsx,ts,tsx}",
+    "./src/components/common/**/*.{js,jsx,ts,tsx}",
+    "./src/components/search/**/*.{js,jsx,ts,tsx}",
+    "./src/components/shared/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -13,7 +19,7 @@ const config: Config = {
         secondary: "#1C3A83",
         accent: "#A8D1FF",
         background: "#F0F2F5",
-        text: "#050505", 
+        text: "#050505",
       },
       keyframes: {
         flicker: {

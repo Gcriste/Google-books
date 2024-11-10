@@ -3,9 +3,13 @@ import { Box, Divider } from "../common";
 import { BookType } from "@/app/types";
 import BookSkeleton from "./book-skeleton";
 
-type OwnProps = { books: BookType[]; isLoading?: boolean };
+type OwnProps = {
+  books: BookType[];
+  isLoading?: boolean;
+  isMyReviews?: boolean;
+};
 
-const BookList = ({ books, isLoading }: OwnProps) => {
+const BookList = ({ books, isLoading, isMyReviews }: OwnProps) => {
   if (isLoading) {
     return Array.from({ length: 10 }).map((i, idx) => (
       <BookSkeleton key={`${i}-${idx}`} />
@@ -18,7 +22,7 @@ const BookList = ({ books, isLoading }: OwnProps) => {
         books.map((book, idx) => (
           <Box key={`${book.id}-${idx}`}>
             {idx !== 0 && <Divider />}
-            <Book book={book} />
+            <Book book={book} isMyReviews={isMyReviews}/>
           </Box>
         ))}
     </Box>

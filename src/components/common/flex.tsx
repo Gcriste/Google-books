@@ -26,9 +26,9 @@ const Flex = ({
 }: FlexProps) => {
   return (
     <div
-      className={`flex flex-${direction} items-${align} justify-${justify} ${
+      className={`${className} flex flex-${direction} items-${align} ${
         wrap ? 'flex-wrap' : ''
-      } ${gap} ${className}`}
+      } ${gap} justify-${justify}`}
       style={{ maxWidth, minHeight }} 
       {...rest} 
     >

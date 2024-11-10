@@ -7,10 +7,10 @@ import { useApi } from "@/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 type OwnProps = {
-  isFavorites?: boolean;
+  isMyReviews?: boolean;
 };
 
-const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
+const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
   const { getAll } = useApi();
   const { data: currentBooks = {}, isLoading } = useQuery({
     queryKey: ["savedBooks"],
@@ -20,8 +20,7 @@ const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
   const savedBooks = Object.values(currentBooks);
   const favoriteBooks = savedBooks.filter((book) => book.isFavorite);
   const booksWithReviews = savedBooks.filter((book) => !!book.reviews?.length);
-
-  console.log("booksWithReviews", { booksWithReviews });
+  
   const favorites = {
     hasLength: favoriteBooks.length,
     emptyText: "No favorites selected",
@@ -32,13 +31,14 @@ const SavedBooksContainer = ({ isFavorites }: OwnProps) => {
     emptyText: "No reviews written",
   };
 
-  const { hasLength, emptyText } = isFavorites ? favorites : reviews;
+  const { hasLength, emptyText } = isMyReviews ? reviews : favorites;
   return (
     <Box>
       {hasLength ? (
         <BookList
-          books={isFavorites ? favoriteBooks : booksWithReviews}
+          books={isMyReviews ? booksWithReviews : favoriteBooks}
           isLoading={isLoading}
+          isMyReviews={isMyReviews}
         />
       ) : (
         <Text>{emptyText}</Text>

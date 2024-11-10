@@ -86,7 +86,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
 
   return (
     <Flex direction="col" gap="gap-2">
-      <Text variant="heading" size="xLarge">
+      <Text variant="subheading" size="large">
         Leave a Review
       </Text>
 
@@ -97,26 +97,25 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           {...register("title", { required: "Title is required" })}
-          placeholder="Write your title"
+          className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:border-blue-500"
+          placeholder="Review title"
         />
         {errors.title && <p className="text-red-500">{errors.title.message}</p>}
 
         <textarea
           {...register("reviewText", { required: "Review is required" })}
-          placeholder="Write your review here..."
-          className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
+          placeholder="Review description"
+          className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
           rows={4}
         ></textarea>
         {errors.reviewText && (
           <p className="text-red-500">{errors.reviewText.message}</p>
         )}
-
         {error && <p className="text-red-500 mb-2">{error.message}</p>}
 
         <Button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition duration-200"
-        >
+          className="min-w-40">
           Submit
         </Button>
       </form>

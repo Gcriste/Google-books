@@ -4,7 +4,8 @@ import { BookType, SavedBook } from "@/app/types";
 
 export const useApi = () => {
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  
+ 
+
   if(!apiKey){
     console.log("no api key found")
   }
@@ -17,7 +18,6 @@ export const useApi = () => {
     }
   
     const data = await response.json();
-    console.log('data', data)
     return data.items || [];
   };
 
@@ -50,7 +50,6 @@ export const useApi = () => {
   const updateBook = async (book: BookType) => {
     const currentBooks = getAll();
     const { id, ...rest } = book;
-    console.log("in here");
     const updatedBook = { ...currentBooks, [id]: { id, ...rest } };
     localStorage.setItem("savedBooks", JSON.stringify(updatedBook));
     return updatedBook;

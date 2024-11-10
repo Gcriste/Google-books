@@ -12,9 +12,10 @@ type OwnProps = {
   book: BookType;
   isDetails?: boolean;
   isLoading?: boolean
+  isMyReviews?: boolean
 };
 
-const Book = ({ book, isDetails, isLoading }: OwnProps) => {
+const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
   const { updateBook } = useApi();
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
     book.isFavorite
@@ -40,7 +41,6 @@ const Book = ({ book, isDetails, isLoading }: OwnProps) => {
 
   const handleClick = useCallback(
     (action: "add" | "remove") => () => {
-      console.log("clicked", { book });
       const isFavorite = action === "add";
       updateBook({ ...book, isFavorite });
       setIsFavorite((prev) => !prev);
@@ -98,7 +98,7 @@ const Book = ({ book, isDetails, isLoading }: OwnProps) => {
       </Flex>
       {isDetails && (buyLink || listPrice) && (
         <Flex direction="col" gap="gap-2">
-          <Text variant="subheading">
+          <Text variant="subheading" size="large">
             Sale info
           </Text>
           <Flex>
@@ -107,11 +107,11 @@ const Book = ({ book, isDetails, isLoading }: OwnProps) => {
           </Flex>
         </Flex>
       )}
-      {isDetails ? (
+      {(isDetails || isMyReviews)? (
         <ReviewContainer
           bookId={id}
           reviews={reviews}
-          hasViewAllReviews={false}
+          isMyReviews={isMyReviews}
         />
       ) : (
         <Link

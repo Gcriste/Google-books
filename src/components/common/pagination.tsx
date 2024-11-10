@@ -19,7 +19,7 @@ type PaginationProps = {
         onPageChange(page);
       }
     };
-  console.log('currentPage', currentPage)
+
     return (
       <Box className="flex items-center justify-center space-x-2">
         <Button
