@@ -61,10 +61,7 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-      typescript: {
-        project: './tsconfig.json', // Ensures that TypeScript paths are resolved according to tsconfig.json
-      },
+      }
     },
   },
   overrides: [
