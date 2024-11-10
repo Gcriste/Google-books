@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { FormValues } from "./types";
-import SearchForm from "@/components/search/search-form";
+import SearchForm from "@/components/search-form";
 
 const HomePage = () => {
   const { getBookById, searchBooks } = useApi();

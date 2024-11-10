@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent } from "react";
-import { Box, Button, Flex } from "../common";
+import { Box, Button, Flex } from "./common";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormValues } from "@/app/types";
 

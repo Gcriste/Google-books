@@ -52,7 +52,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
   });
 
   const currentBook = getBookById(idFromParams as string) ?? bookData;
-  const id = (idFromParams ?? currentBook?.id) as string
+  const id = (idFromParams ?? currentBook?.id) as string;
 
   const handleRatingClick = (selectedRating: number) => {
     setValue("rating", selectedRating, { shouldValidate: true });
@@ -87,7 +87,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
 
   return (
     <Flex direction="col" gap="gap-2">
-      <Text variant="subheading" size="large">
+        <Text variant="subheading" size="large">
         Leave a Review
       </Text>
 
@@ -114,9 +114,7 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
         )}
         {error && <p className="text-red-500 mb-2">{error.message}</p>}
 
-        <Button
-          type="submit"
-          className="min-w-40">
+        <Button type="submit" className="min-w-40">
           Submit
         </Button>
       </form>
