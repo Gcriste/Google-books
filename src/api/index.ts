@@ -4,13 +4,18 @@ import { BookType, SavedBook } from "@/app/types";
 
 export const useApi = () => {
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  console.log("api", {hasApiKey: !!apiKey})
+  
+  if(!apiKey){
+    console.log("no api key found")
+  }
+
   const searchBooks = async (searchStr: string): Promise<BookType[]> => {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${searchStr}&key=${apiKey}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Failed to fetch books");
     }
+  
     const data = await response.json();
     console.log('data', data)
     return data.items || [];
