@@ -20,8 +20,7 @@ git clone https://github.com/Gcriste/Google-books.git
 npm install or yarn
 ### 3. Set up environment variables:
 GOOGLE_BOOKS_API_KEY=your-api-key-here
-
-## Run development server locally: 
+### 4. Run development server locally: 
 npm run dev
 
 
