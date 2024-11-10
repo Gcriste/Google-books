@@ -21,7 +21,7 @@ type OwnProps = {
 };
 
 const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
-  const { id } = useParams();
+  const { id: idFromParams } = useParams();
   const { getBookDetails } = useApi();
   const { getBookById } = useApi();
   const {
@@ -47,11 +47,12 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
     error,
   } = useQuery({
     queryKey: ["bookDetails"],
-    queryFn: () => getBookDetails(id as string),
-    enabled: !!id,
+    queryFn: () => getBookDetails(idFromParams as string),
+    enabled: !!idFromParams,
   });
 
-  const currentBook = getBookById(id as string) ?? bookData;
+  const currentBook = getBookById(idFromParams as string) ?? bookData;
+  const id = (idFromParams ?? currentBook?.id) as string
 
   const handleRatingClick = (selectedRating: number) => {
     setValue("rating", selectedRating, { shouldValidate: true });
