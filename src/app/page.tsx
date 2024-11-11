@@ -4,7 +4,7 @@ import { Container } from '@/components/common'
 import BookList from '@/components/books/book-list'
 import { useApi } from '@/api'
 import { useCallback, useEffect, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import type { FormValues } from './types'
 import SearchForm from '@/components/search-form'
@@ -15,7 +15,6 @@ const HomePage = () => {
   const { getByIdFromDB, searchBooks } = useApi()
   const { searchStr, setSearchStr } = useBookContext()
   const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
-  const queryClient = useQueryClient()
 
   const {
     data: searchedBooks,
@@ -26,7 +25,7 @@ const HomePage = () => {
     queryFn: () => searchBooks(searchStr),
     enabled: triggerQuery && !!searchStr
   })
-  console.log('searchStr', { searchStr, searchedBooks, triggerQuery })
+
   const handleSubmit = useCallback(
     (reset: UseFormReset<FormValues>) => (data: FormValues) => {
       setSearchStr(data.searchStr)
@@ -35,9 +34,6 @@ const HomePage = () => {
     },
     [setSearchStr]
   )
-  const cachedData = queryClient.getQueryData(['searchedBooks'])
-  const allCacheData = queryClient
-  console.log('Cached Data:', { cachedData, allCacheData })
 
   useEffect(() => {
     if (triggerQuery) {
