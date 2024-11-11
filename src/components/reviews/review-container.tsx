@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Pagination, Text } from '../common'
-import type { Review } from '@/app/types'
+import type { BookType, Review } from '@/app/types'
 import Rating from './rating'
 import ReviewForm from './review-form'
 import { useMutation } from '@tanstack/react-query'
@@ -7,12 +7,12 @@ import { useApi } from '@/api'
 import { useCallback, useState } from 'react'
 
 type OwnProps = {
-  bookId: string
+  book: BookType
   reviews?: Review[]
   isMyReviews?: boolean
 }
 
-const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
+const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
   const { updateBook } = useApi()
   const [reviewList, setReviewList] = useState<Review[]>(reviews || [])
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -22,9 +22,9 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
   const totalPages = Math.ceil(reviewList.length / 5)
   const countPerPage = 5
   const { mutate: updateBookFromStorage } = useMutation({
-    mutationFn: updateBook, // Now returns a Promise<updatedBooks>
+    mutationFn: updateBook,
     onSuccess: updatedBooks => {
-      setReviewList(updatedBooks[bookId]?.reviews || [])
+      setReviewList(updatedBooks[book.id]?.reviews || [])
     }
   })
 
@@ -94,7 +94,7 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
           />
         )}
       </Flex>
-      <ReviewForm updateBookFromStorage={updateBookFromStorage} />
+      <ReviewForm book={book} updateBookFromStorage={updateBookFromStorage} />
     </>
   )
 }

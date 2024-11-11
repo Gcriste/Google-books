@@ -108,7 +108,7 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
       )}
       {isDetails || isMyReviews ? (
         <ReviewContainer
-          bookId={id}
+          book={book}
           reviews={reviews}
           isMyReviews={isMyReviews}
         />

@@ -9,7 +9,7 @@ import type { FormValues } from './types'
 import SearchForm from '@/components/search-form'
 
 const HomePage = () => {
-  const { getBookById, searchBooks } = useApi()
+  const { getByIdFromDB, searchBooks } = useApi()
   const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
   const [searchStr, setSearchStr] = useState<string>('')
 
@@ -35,13 +35,13 @@ const HomePage = () => {
   }, [triggerQuery])
 
   const updatedBooks = (searchedBooks ?? []).map(
-    book => getBookById(book.id) ?? book
+    book => getByIdFromDB(book.id) ?? book
   )
 
   return (
     <Container title="Book Search">
       <SearchForm onSubmit={handleSubmit} />
-      <BookList books={updatedBooks} isLoading={isLoading} />
+      <BookList books={updatedBooks} isLoading={isLoading} error={error} />
     </Container>
   )
 }

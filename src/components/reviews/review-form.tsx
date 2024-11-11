@@ -1,16 +1,14 @@
 'use client'
 import { useCallback } from 'react'
-import { useParams } from 'next/navigation'
 import Rating from './rating'
-import { useApi } from '@/api'
 import type { BookType, FormValues } from '@/app/types'
 import { format } from 'date-fns/format'
 import { Button, Flex, Text } from '../common'
 import type { UseMutateFunction } from '@tanstack/react-query'
-import { useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 
 type OwnProps = {
+  book: BookType
   updateBookFromStorage: UseMutateFunction<
     {
       [x: string]: BookType
@@ -21,10 +19,7 @@ type OwnProps = {
   >
 }
 
-const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
-  const { id: idFromParams } = useParams()
-  const { getBookDetails } = useApi()
-  const { getBookById } = useApi()
+const ReviewForm = ({ book, updateBookFromStorage }: OwnProps) => {
   const {
     register,
     handleSubmit,
@@ -42,18 +37,6 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
   })
 
   const rating = watch('rating')
-  const {
-    data: bookData,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['bookDetails'],
-    queryFn: () => getBookDetails(idFromParams as string),
-    enabled: !!idFromParams
-  })
-
-  const currentBook = getBookById(idFromParams as string) ?? bookData
-  const id = (idFromParams ?? currentBook?.id) as string
 
   const handleRatingClick = useCallback(
     (selectedRating: number) => () => {
@@ -73,10 +56,10 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
     const { title, reviewText, rating } = data
     const formattedDate = format(new Date(), 'MMMM dd, yyyy')
     updateBookFromStorage({
-      ...((currentBook ?? {}) as BookType),
-      id: id as string,
+      ...((book ?? {}) as BookType),
+      [book.id]: book.id,
       reviews: [
-        ...(currentBook?.reviews ?? []),
+        ...(book?.reviews ?? []),
         {
           id: crypto.randomUUID(),
           title,

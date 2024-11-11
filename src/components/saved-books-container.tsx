@@ -1,7 +1,7 @@
 'use client'
 
 import BookList from './books/book-list'
-import { Box, Text } from './common'
+import { Text } from './common'
 import { useApi } from '@/api'
 import { useQuery } from '@tanstack/react-query'
 
@@ -10,10 +10,14 @@ type OwnProps = {
 }
 
 const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
-  const { getAll } = useApi()
-  const { data: currentBooks = {}, isLoading } = useQuery({
+  const { getAllFromDB } = useApi()
+  const {
+    data: currentBooks = {},
+    isLoading,
+    error
+  } = useQuery({
     queryKey: ['savedBooks'],
-    queryFn: getAll
+    queryFn: getAllFromDB
   })
 
   const savedBooks = Object.values(currentBooks)
@@ -31,18 +35,15 @@ const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
   }
 
   const { hasLength, emptyText } = isMyReviews ? reviews : favorites
-  return (
-    <Box>
-      {hasLength ? (
-        <BookList
-          books={isMyReviews ? booksWithReviews : favoriteBooks}
-          isLoading={isLoading}
-          isMyReviews={isMyReviews}
-        />
-      ) : (
-        <Text>{emptyText}</Text>
-      )}
-    </Box>
+  return hasLength ? (
+    <BookList
+      books={isMyReviews ? booksWithReviews : favoriteBooks}
+      isLoading={isLoading}
+      isMyReviews={isMyReviews}
+      error={error}
+    />
+  ) : (
+    <Text>{emptyText}</Text>
   )
 }
 

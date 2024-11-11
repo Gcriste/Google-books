@@ -32,28 +32,34 @@ export const useApi = () => {
     return data
   }
 
-  const getAll = (): SavedBook | undefined => {
+  const getAllFromDB = (): SavedBook | undefined => {
     const currentBooks = localStorage.getItem('savedBooks') ?? '{}'
     const parsedBooks = JSON.parse(currentBooks) ?? {}
 
     return parsedBooks
   }
 
-  const getBookById = (id: string | undefined): BookType | undefined => {
+  const getByIdFromDB = (id: string | undefined): BookType | undefined => {
     if (!id) return
-    const currentBooks = getAll()
+    const currentBooks = getAllFromDB()
     const currentBook = currentBooks?.[id]
 
     return currentBook
   }
 
   const updateBook = async (book: BookType) => {
-    const currentBooks = getAll()
+    const currentBooks = getAllFromDB()
     const { id, ...rest } = book
     const updatedBook = { ...currentBooks, [id]: { id, ...rest } }
     localStorage.setItem('savedBooks', JSON.stringify(updatedBook))
     return updatedBook
   }
 
-  return { searchBooks, getBookDetails, getAll, getBookById, updateBook }
+  return {
+    searchBooks,
+    getBookDetails,
+    getAllFromDB,
+    getByIdFromDB,
+    updateBook
+  }
 }

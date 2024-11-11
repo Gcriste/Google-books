@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 
 const DetailPage = () => {
   const { id } = useParams()
-  const { getBookDetails, getBookById } = useApi()
+  const { getBookDetails, getByIdFromDB } = useApi()
   const {
     data: bookData,
     isLoading,
@@ -20,7 +20,7 @@ const DetailPage = () => {
     enabled: !!id
   })
 
-  const currentBook = getBookById(id as string) ?? bookData
+  const currentBook = getByIdFromDB(id as string) ?? bookData
   const isRefetchBook = currentBook?.id !== id
 
   return (
