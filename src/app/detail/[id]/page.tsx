@@ -32,7 +32,7 @@ const DetailPage = () => {
           isLoading={isLoading || isRefetchBook}
         />
       )}
-      {error && <Text className="mt-4 text-danger">{error.message}</Text>}
+      {error && <Text variant="error">{error.message}</Text>}
     </Container>
   )
 }
