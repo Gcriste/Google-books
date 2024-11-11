@@ -20,7 +20,7 @@ export default function ReactQueryProvider({
     }
   })
   const persister = createSyncStoragePersister({
-    storage: window.localStorage
+    storage: localStorage
   })
   persistQueryClient({
     queryClient,
