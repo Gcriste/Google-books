@@ -98,7 +98,7 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
           />
         )}
       </Flex>
-      <ReviewForm book={book} updateBookFromStorage={updateBookFromStorage} />
+      <ReviewForm updateBookFromStorage={updateBookFromStorage} />
     </>
   )
 }

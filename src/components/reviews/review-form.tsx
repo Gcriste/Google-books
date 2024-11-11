@@ -11,7 +11,6 @@ import { useParams } from 'next/navigation'
 import { useApi } from '@/api'
 
 type OwnProps = {
-  book: BookType
   updateBookFromStorage: UseMutateFunction<
     {
       [x: string]: BookType
@@ -22,7 +21,7 @@ type OwnProps = {
   >
 }
 
-const ReviewForm = ({ book, updateBookFromStorage }: OwnProps) => {
+const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
   const { id: idFromParams } = useParams()
   const { getBookDetails, getByIdFromDB } = useApi()
 
