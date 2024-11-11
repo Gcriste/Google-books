@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes } from 'react'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   onClick?: () => void
@@ -26,13 +26,13 @@ const Button = ({
   const cursorStyle = pointerOnHover && !disabled ? 'cursor-pointer' : ''
 
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-500',
+    primary: 'bg-primary text-white hover:bg-blue-500',
+    secondary: 'bg-secondary text-white hover:bg-blue-800',
     outline: disabled
-      ? 'border border-blue-600 text-blue-600'
-      : 'border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white',
-    danger: 'bg-red-600 text-white hover:bg-red-500',
-    ghost: 'border-none'
+      ? 'border border-primary text-primary'
+      : 'border border-primary text-primary hover:bg-primary hover:text-white',
+    danger: 'bg-danger text-white hover:bg-red-500',
+    ghost: 'border-none '
   }
 
   const sizeStyles = {

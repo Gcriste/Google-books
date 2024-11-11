@@ -1,25 +1,24 @@
-import { BookType } from "@/app/types";
-import Link from "next/link";
-import { Box, Button, Flex, Text } from "../common";
-import { useCallback, useState } from "react";
-import { useApi } from "@/api";
-import ReviewContainer from "./review-container";
-import { formatDate, formatPrice } from "@/helpers";
-import BookSkeleton from "./book-skeleton";
-
+import type { BookType } from '@/app/types'
+import Link from 'next/link'
+import { Box, Button, Flex, Text } from '../common'
+import { useCallback, useState } from 'react'
+import { useApi } from '@/api'
+import ReviewContainer from '../reviews/review-container'
+import { formatDate, formatPrice } from '@/helpers'
+import BookSkeleton from './book-skeleton'
 
 type OwnProps = {
-  book: BookType;
-  isDetails?: boolean;
+  book: BookType
   isLoading?: boolean
+  isDetails?: boolean
   isMyReviews?: boolean
-};
+}
 
-const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
-  const { updateBook } = useApi();
+const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
+  const { updateBook } = useApi()
   const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
     book.isFavorite
-  );
+  )
 
   const {
     id,
@@ -32,25 +31,27 @@ const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
       publisher,
       publishedDate,
       categories,
-      imageLinks,
+      imageLinks
     },
-    saleInfo: { buyLink, listPrice },
-  } = book;
+    saleInfo: { buyLink, listPrice }
+  } = book
 
-  const cleanDescription = description?.replace(/<[^>]*>/g, "");
+  const cleanDescription = description?.replace(/<[^>]*>/g, '') ?? ''
+  const shortDescription =
+    !isDetails && !isMyReviews && cleanDescription.length > 500
+      ? `${cleanDescription?.slice(0, 500)}...view more`
+      : cleanDescription
 
   const handleClick = useCallback(
-    (action: "add" | "remove") => () => {
-      const isFavorite = action === "add";
-      updateBook({ ...book, isFavorite });
-      setIsFavorite((prev) => !prev);
+    (action: 'add' | 'remove') => () => {
+      const isFavorite = action === 'add'
+      updateBook({ ...book, isFavorite })
+      setIsFavorite(prev => !prev)
     },
-    []
-  );
+    [book, updateBook]
+  )
 
-
-
-  if(isLoading) return <BookSkeleton isDetails={isDetails}/>
+  if (isLoading) return <BookSkeleton isDetails={isDetails} />
 
   return (
     <>
@@ -61,11 +62,11 @@ const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
           )}
           <Box>
             {isFavorite ? (
-              <Button variant="danger" onClick={handleClick("remove")}>
+              <Button variant="danger" onClick={handleClick('remove')}>
                 Remove from favorites
               </Button>
             ) : (
-              <Button variant="primary" onClick={handleClick("add")}>
+              <Button variant="primary" onClick={handleClick('add')}>
                 Add to favorites
               </Button>
             )}
@@ -85,15 +86,13 @@ const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
           <Text variant="subheading">{subtitle}</Text>
           {isDetails && (
             <Flex direction="col">
-               <Text>{categories}</Text>
+              <Text>Categories: {categories}</Text>
               <Text>
-                Published by {publisher} on{" "}
-                {formatDate(publishedDate)}
+                Published by: {publisher} on {formatDate(publishedDate)}
               </Text>
-             
             </Flex>
           )}
-          <Text>{cleanDescription}</Text>
+          <Text>{shortDescription}</Text>
         </Flex>
       </Flex>
       {isDetails && (buyLink || listPrice) && (
@@ -102,12 +101,12 @@ const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
             Sale info
           </Text>
           <Flex>
-          <Text>{formatPrice(listPrice)}</Text>
+            <Text>{formatPrice(listPrice)}</Text>
             {buyLink && <Link href={buyLink}>Buy now</Link>}
           </Flex>
         </Flex>
       )}
-      {(isDetails || isMyReviews)? (
+      {isDetails || isMyReviews ? (
         <ReviewContainer
           bookId={id}
           reviews={reviews}
@@ -122,7 +121,7 @@ const Book = ({ book, isDetails, isLoading, isMyReviews }: OwnProps) => {
         </Link>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Book;
+export default Book

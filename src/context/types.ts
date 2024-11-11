@@ -1,5 +1,5 @@
-import { BookType } from '@/app/types'
-import { Dispatch, SetStateAction } from 'react'
+import type { BookType } from '@/app/types'
+import type { Dispatch, SetStateAction } from 'react'
 
 export type BookState = {
   searchedBooks: BookType[]

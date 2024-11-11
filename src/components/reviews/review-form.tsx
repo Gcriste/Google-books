@@ -1,12 +1,13 @@
 'use client'
 import { useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import Rating from './shared/rating'
+import Rating from './rating'
 import { useApi } from '@/api'
-import { BookType, FormValues } from '@/app/types'
+import type { BookType, FormValues } from '@/app/types'
 import { format } from 'date-fns/format'
-import { Button, Flex, Text } from './common'
-import { UseMutateFunction, useQuery } from '@tanstack/react-query'
+import { Button, Flex, Text } from '../common'
+import type { UseMutateFunction } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 
 type OwnProps = {
@@ -95,16 +96,14 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
       </Text>
 
       <Rating rating={rating} handleRatingClick={handleRatingClick} />
-      {errors?.rating && (
-        <p className="text-red-500">{errors?.rating.message}</p>
-      )}
+      {errors?.rating && <Text variant="error">{errors?.rating.message}</Text>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
           {...register('title', { required: 'Title is required' })}
           className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:border-blue-500"
           placeholder="Review title"
         />
-        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+        {errors.title && <Text variant="error">{errors.title.message}</Text>}
 
         <textarea
           {...register('reviewText', { required: 'Review is required' })}
@@ -113,13 +112,13 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
           rows={4}
         ></textarea>
         {errors.reviewText && (
-          <p className="text-red-500">{errors.reviewText.message}</p>
+          <Text variant="error">{errors.reviewText.message}</Text>
         )}
-        {error && <p className="text-red-500 mb-2">{error.message}</p>}
-
-        <Button type="submit" className="min-w-40">
-          Submit
-        </Button>
+        <Flex>
+          <Button type="submit" className="min-w-40">
+            Submit
+          </Button>
+        </Flex>
       </form>
     </Flex>
   )

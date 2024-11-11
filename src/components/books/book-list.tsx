@@ -1,6 +1,6 @@
 import Book from './book'
 import { Box, Divider } from '../common'
-import { BookType } from '@/app/types'
+import type { BookType } from '@/app/types'
 import BookSkeleton from './book-skeleton'
 
 type OwnProps = {

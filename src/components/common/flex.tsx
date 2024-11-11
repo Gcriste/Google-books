@@ -1,4 +1,5 @@
-import { ReactNode, HTMLAttributes, useMemo } from 'react'
+import type { ReactNode, HTMLAttributes } from 'react'
+import { useMemo } from 'react'
 
 type FlexProps = {
   children: ReactNode

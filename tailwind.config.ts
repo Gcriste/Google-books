@@ -19,7 +19,8 @@ const config: Config = {
         secondary: '#1C3A83',
         accent: '#A8D1FF',
         background: '#F0F2F5',
-        text: '#050505'
+        text: '#050505',
+        danger: '#e53e3e'
       },
       keyframes: {
         flicker: {

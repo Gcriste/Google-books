@@ -1,7 +1,7 @@
 'use client'
 
-import BookList from './book-list'
-import { Box, Text } from '../common'
+import BookList from './books/book-list'
+import { Box, Text } from './common'
 import { useApi } from '@/api'
 import { useQuery } from '@tanstack/react-query'
 

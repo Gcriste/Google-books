@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import HomePage from "../page";
+import HomePage from '../page'
 
 const SearchPage = () => {
-  return <HomePage />;
-};
+  return <HomePage />
+}
 
-export default SearchPage;
+export default SearchPage

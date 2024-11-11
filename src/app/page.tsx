@@ -1,11 +1,11 @@
 'use client'
 import { Container } from '@/components/common'
-import BookList from '@/components/shared/book-list'
+import BookList from '@/components/books/book-list'
 import { useApi } from '@/api'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import { FormValues } from './types'
+import type { FormValues } from './types'
 import SearchForm from '@/components/search-form'
 
 const HomePage = () => {
@@ -18,15 +18,15 @@ const HomePage = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['searchedBooks'],
+    queryKey: ['searchedBooks', searchStr],
     queryFn: () => searchBooks(searchStr),
     enabled: triggerQuery && !!searchStr
   })
 
-  const handleSubmit = (data: FormValues) => {
+  const handleSubmit = useCallback((data: FormValues) => {
     setSearchStr(data.searchStr)
     setTriggerQuery(true)
-  }
+  }, [])
 
   useEffect(() => {
     if (triggerQuery) {

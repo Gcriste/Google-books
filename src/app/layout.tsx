@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import '../styles/globals.css'
-import Navbar from '@/components/navbar'
+import { Navbar, Footer } from '@/components/common'
 import BookContextProvider from '@/context/provider'
 import ReactQueryProvider from './query-client'
-import Footer from '@/components/common/footer'
 
 const geistSans = localFont({
   src: '../styles/fonts/GeistVF.woff',

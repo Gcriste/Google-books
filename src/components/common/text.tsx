@@ -1,5 +1,5 @@
-interface TextProps {
-  variant?: 'heading' | 'subheading' | 'body' | 'caption'
+type TextProps = {
+  variant?: 'heading' | 'subheading' | 'body' | 'caption' | 'error'
   size?: 'small' | 'medium' | 'large' | 'xLarge'
   children: React.ReactNode
   className?: string
@@ -17,7 +17,8 @@ const Text: React.FC<TextProps> = ({
     heading: 'font-semibold text-gray-800',
     subheading: 'font-semibold text-gray-700',
     body: 'text-gray-600',
-    caption: 'text-gray-500 text-sm'
+    caption: 'text-gray-500 text-sm',
+    error: 'text-danger'
   }
 
   const sizeStyles = {
@@ -29,7 +30,7 @@ const Text: React.FC<TextProps> = ({
 
   return (
     <span
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]}`}
+      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
     >
       {children}
     </span>

@@ -1,8 +1,8 @@
 'use client'
 import type { FC, PropsWithChildren } from 'react'
 import { useMemo, useState } from 'react'
-import { BookState } from './types'
-import { BookType } from '@/app/types'
+import type { BookState } from './types'
+import type { BookType } from '@/app/types'
 import { BookStore } from './store'
 
 const { Provider } = BookStore

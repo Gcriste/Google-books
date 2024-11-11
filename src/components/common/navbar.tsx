@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Menu, MenuItem, MenuItems } from '@headlessui/react'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import { Box, Button } from './common'
+import { Box, Button } from '.'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)

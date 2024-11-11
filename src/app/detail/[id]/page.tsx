@@ -3,8 +3,8 @@
 import { useParams } from 'next/navigation'
 
 import { useApi } from '@/api'
-import { Container } from '@/components/common'
-import Book from '@/components/shared/book'
+import { Container, Text } from '@/components/common'
+import Book from '@/components/books/book'
 import { useQuery } from '@tanstack/react-query'
 
 const DetailPage = () => {
@@ -15,7 +15,7 @@ const DetailPage = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['bookDetails'],
+    queryKey: ['bookDetails', id],
     queryFn: () => getBookDetails(id as string),
     enabled: !!id
   })
@@ -32,7 +32,7 @@ const DetailPage = () => {
           isLoading={isLoading || isRefetchBook}
         />
       )}
-      {error && <p className="mt-4 text-red-500">{error.message}</p>}
+      {error && <Text className="mt-4 text-danger">{error.message}</Text>}
     </Container>
   )
 }

@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Pagination, Text } from '../common'
-import { Review } from '@/app/types'
+import type { Review } from '@/app/types'
 import Rating from './rating'
-import ReviewForm from '../review-form'
+import ReviewForm from './review-form'
 import { useMutation } from '@tanstack/react-query'
 import { useApi } from '@/api'
 import { useCallback, useState } from 'react'
@@ -68,7 +68,7 @@ const ReviewContainer = ({ bookId, reviews, isMyReviews }: OwnProps) => {
                       <Text>{message}</Text>
                     </Flex>
                   </Flex>
-                  {!showReviews && (
+                  {!showReviews && reviewList.length > 1 && (
                     <Flex justify="end">
                       <Button
                         variant="ghost"
