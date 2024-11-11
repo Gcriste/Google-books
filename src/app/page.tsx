@@ -15,8 +15,6 @@ const HomePage = () => {
   const { searchStr, setSearchStr } = useBookContext()
   const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
 
-  console.log('searchStr', searchStr)
-
   const {
     data: searchedBooks,
     isLoading,
@@ -26,7 +24,7 @@ const HomePage = () => {
     queryFn: () => searchBooks(searchStr),
     enabled: triggerQuery && !!searchStr
   })
-
+  console.log('searchStr', { searchStr, searchedBooks, triggerQuery })
   const handleSubmit = useCallback(
     (reset: UseFormReset<FormValues>) => (data: FormValues) => {
       setSearchStr(data.searchStr)
