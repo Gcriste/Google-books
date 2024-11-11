@@ -12,8 +12,8 @@ import type { UseFormReset } from 'react-hook-form'
 
 const HomePage = () => {
   const { getByIdFromDB, searchBooks } = useApi()
-  const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
   const { searchStr, setSearchStr } = useBookContext()
+  const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
 
   const {
     data: searchedBooks,
