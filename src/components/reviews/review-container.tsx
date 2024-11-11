@@ -21,7 +21,7 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
   )
   const totalPages = Math.ceil(reviewList.length / 5)
   const countPerPage = 5
-  const { mutate: updateBookFromStorage } = useMutation({
+  const { mutate: updateBookFromStorage, isPending } = useMutation({
     mutationFn: updateBook,
     onSuccess: updatedBooks => {
       setReviewList(updatedBooks[book.id]?.reviews || [])
