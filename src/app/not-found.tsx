@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Not Found'
 }
 
-export default function NotFound() {
+const NotFound = () => {
   return (
     <main>
       <section className="bg-white">
@@ -24,3 +24,5 @@ export default function NotFound() {
     </main>
   )
 }
+
+export default NotFound
