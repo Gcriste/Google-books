@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import type { ReactNode } from 'react'
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 
 type ReactQueryProviderProps = {
   children: ReactNode
@@ -18,9 +19,12 @@ export default function ReactQueryProvider({
       }
     }
   })
-
+  const persister = createSyncStoragePersister({
+    storage: window.localStorage
+  })
   persistQueryClient({
-    queryClient
+    queryClient,
+    persister
   })
 
   return (
