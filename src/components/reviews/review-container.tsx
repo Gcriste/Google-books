@@ -59,7 +59,10 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
                   <Flex direction="col">
                     <Flex align="center" justify="between">
                       <Flex align="center">
-                        <Rating rating={Number(rating ?? '0')} pointerOnHover />
+                        <Rating
+                          rating={Number(rating ?? '0')}
+                          disableCursorPointer
+                        />
                         <Text variant="heading">{title}</Text>
                       </Flex>
                       <Text>Last updated: {lastUpdated}</Text>

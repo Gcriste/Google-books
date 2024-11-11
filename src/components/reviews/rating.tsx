@@ -3,10 +3,14 @@ import { Button, Flex } from '../common'
 type OwnProps = {
   rating: number
   handleRatingClick?: (selectedRating: number) => () => void
-  pointerOnHover?: boolean
+  disableCursorPointer?: boolean
 }
 
-const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
+const Rating = ({
+  rating,
+  handleRatingClick,
+  disableCursorPointer
+}: OwnProps) => {
   return (
     <Flex align="center" gap="gap-1">
       {[1, 2, 3, 4, 5].map(num => (
@@ -14,7 +18,7 @@ const Rating = ({ rating, handleRatingClick, pointerOnHover }: OwnProps) => {
           key={num}
           variant="ghost"
           size="none"
-          pointerOnHover={pointerOnHover}
+          disableCursorPointer={disableCursorPointer}
           className={`text-2xl ${
             num <= rating ? 'text-yellow-400' : 'text-gray-300'
           }`}
