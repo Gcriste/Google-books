@@ -15,6 +15,8 @@ const HomePage = () => {
   const { searchStr, setSearchStr } = useBookContext()
   const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
 
+  console.log('searchStr', searchStr)
+
   const {
     data: searchedBooks,
     isLoading,
