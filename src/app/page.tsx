@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use client'
 import { Container } from '@/components/common'
 import BookList from '@/components/books/book-list'
