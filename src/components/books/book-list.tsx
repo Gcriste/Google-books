@@ -17,15 +17,13 @@ const BookList = ({ books, isLoading, isMyReviews }: OwnProps) => {
   }
 
   return (
-    <Box>
-      {books.length > 0 &&
-        books.map((book, idx) => (
-          <Box key={`${book.id}-${idx}`}>
-            {idx !== 0 && <Divider />}
-            <Book book={book} isMyReviews={isMyReviews} />
-          </Box>
-        ))}
-    </Box>
+    books.length > 0 &&
+    books.map((book, idx) => (
+      <Box key={`${book.id}-${idx}`}>
+        {idx !== 0 && <Divider />}
+        <Book book={book} isMyReviews={isMyReviews} />
+      </Box>
+    ))
   )
 }
 

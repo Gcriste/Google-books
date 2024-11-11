@@ -88,7 +88,7 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
             <Flex direction="col">
               <Text>Categories: {categories}</Text>
               <Text>
-                Published by: {publisher} on {formatDate(publishedDate)}
+                Published by {publisher} on {formatDate(publishedDate)}
               </Text>
             </Flex>
           )}
