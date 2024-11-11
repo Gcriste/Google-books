@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'

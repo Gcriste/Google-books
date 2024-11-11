@@ -1,11 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  pageExtensions: ["ts", "tsx", "js", "jsx"],
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
   env: {
-    GOOGLE_BOOKS_API_KEY: process.env.GOOGLE_BOOKS_API_KEY,
-  },
-};
+    GOOGLE_BOOKS_API_KEY: process.env.GOOGLE_BOOKS_API_KEY
+  }
+}
 
-export default nextConfig;
+export default nextConfig

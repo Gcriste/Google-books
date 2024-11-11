@@ -19,14 +19,14 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
   const [showReviews, setShowReviews] = useState<boolean | undefined>(
     isMyReviews
   )
+
   const totalPages = Math.ceil(reviewList.length / 5)
   const countPerPage = 5
-  const { mutate: updateBookFromStorage, isPending } = useMutation({
-    mutationFn: updateBook,
-    onSuccess: updatedBooks => {
-      setReviewList(updatedBooks[book.id]?.reviews || [])
-    }
-  })
+  const currentReviewsList = showReviews ? reviewList : reviewList.slice(0, 1)
+  const slicedReivewList = currentReviewsList.slice(
+    (currentPage - 1) * countPerPage,
+    currentPage * countPerPage
+  )
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page)
@@ -36,11 +36,12 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
     setShowReviews(prev => !prev)
   }, [])
 
-  const currentReviewsList = showReviews ? reviewList : reviewList.slice(0, 1)
-  const slicedReivewList = currentReviewsList.slice(
-    (currentPage - 1) * countPerPage,
-    currentPage * countPerPage
-  )
+  const { mutate: updateBookFromStorage, isPending } = useMutation({
+    mutationFn: updateBook,
+    onSuccess: updatedBooks => {
+      setReviewList(updatedBooks[book.id]?.reviews || [])
+    }
+  })
 
   return (
     <>
