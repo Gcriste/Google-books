@@ -35,7 +35,7 @@ const HomePage = () => {
     },
     [setSearchStr]
   )
-  const cachedData = queryClient.getQueryData(['searchedBooks'])
+  const cachedData = queryClient.getQueryData(['searchedBooks', searchStr])
   const allCacheData = queryClient
   console.log('Cached Data:', { cachedData, allCacheData })
 
