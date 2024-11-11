@@ -1,20 +1,21 @@
 import { Button, Flex, Text } from './common'
-import type { SubmitHandler } from 'react-hook-form'
+import type { SubmitHandler, UseFormReset } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import type { FormValues } from '@/app/types'
 
 type OwnProps = {
-  onSubmit: SubmitHandler<FormValues>
+  onSubmit: (reset: UseFormReset<FormValues>) => SubmitHandler<FormValues>
 }
 
 const SearchForm = ({ onSubmit }: OwnProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<FormValues>()
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit(reset))}>
       <Flex gap="gap-0" className="w-full">
         <input
           type="text"

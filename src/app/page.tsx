@@ -7,11 +7,13 @@ import { useQuery } from '@tanstack/react-query'
 
 import type { FormValues } from './types'
 import SearchForm from '@/components/search-form'
+import { useBookContext } from '@/context/use-book-context'
+import type { UseFormReset } from 'react-hook-form'
 
 const HomePage = () => {
   const { getByIdFromDB, searchBooks } = useApi()
   const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
-  const [searchStr, setSearchStr] = useState<string>('')
+  const { searchStr, setSearchStr } = useBookContext()
 
   const {
     data: searchedBooks,
@@ -23,10 +25,14 @@ const HomePage = () => {
     enabled: triggerQuery && !!searchStr
   })
 
-  const handleSubmit = useCallback((data: FormValues) => {
-    setSearchStr(data.searchStr)
-    setTriggerQuery(true)
-  }, [])
+  const handleSubmit = useCallback(
+    (reset: UseFormReset<FormValues>) => (data: FormValues) => {
+      setSearchStr(data.searchStr)
+      setTriggerQuery(true)
+      reset()
+    },
+    [setSearchStr]
+  )
 
   useEffect(() => {
     if (triggerQuery) {

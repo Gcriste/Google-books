@@ -2,20 +2,19 @@
 import type { FC, PropsWithChildren } from 'react'
 import { useMemo, useState } from 'react'
 import type { BookState } from './types'
-import type { BookType } from '@/app/types'
 import { BookStore } from './store'
 
 const { Provider } = BookStore
 
 const BookContextProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [searchedBooks, setSearchedBooks] = useState<BookType[]>([])
+  const [searchStr, setSearchStr] = useState<string>('')
 
   const value: BookState = useMemo(() => {
     return {
-      searchedBooks,
-      setSearchedBooks
+      searchStr,
+      setSearchStr
     }
-  }, [searchedBooks])
+  }, [searchStr])
 
   return <Provider value={value}>{children}</Provider>
 }
