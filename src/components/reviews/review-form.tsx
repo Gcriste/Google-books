@@ -11,6 +11,7 @@ import { useParams } from 'next/navigation'
 import { useApi } from '@/api'
 
 type OwnProps = {
+  bookId: string
   updateBookFromStorage: UseMutateFunction<
     {
       [x: string]: BookType
@@ -21,8 +22,9 @@ type OwnProps = {
   >
 }
 
-const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
+const ReviewForm = ({ bookId, updateBookFromStorage }: OwnProps) => {
   const { id: idFromParams } = useParams()
+  const id = idFromParams ?? bookId
   const { getBookDetails, getByIdFromDB } = useApi()
 
   const {
@@ -48,12 +50,11 @@ const ReviewForm = ({ updateBookFromStorage }: OwnProps) => {
     error
   } = useQuery({
     queryKey: ['bookDetails'],
-    queryFn: () => getBookDetails(idFromParams as string),
-    enabled: !!idFromParams
+    queryFn: () => getBookDetails(id as string),
+    enabled: !!id
   })
 
-  const currentBook = getByIdFromDB(idFromParams as string) ?? bookData
-  const id = (idFromParams ?? currentBook?.id) as string
+  const currentBook = getByIdFromDB(id as string) ?? bookData
 
   const handleRatingClick = useCallback(
     (selectedRating: number) => () => {
