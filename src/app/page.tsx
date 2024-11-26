@@ -45,8 +45,6 @@ const HomePage = () => {
     book => getByIdFromDB(book.id) ?? book
   )
 
-  console.log('searchedBooks', { searchedBooks })
-
   return (
     <Container title="Book Search">
       <SearchForm onSubmit={handleSubmit} />
