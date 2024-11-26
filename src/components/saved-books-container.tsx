@@ -25,19 +25,21 @@ const SavedBooksContainer = ({ isMyReviews }: OwnProps) => {
   const booksWithReviews = savedBooks.filter(book => !!book.reviews?.length)
 
   const favorites = {
+    books: favoriteBooks,
     hasLength: favoriteBooks.length,
     emptyText: 'No favorites selected'
   }
 
   const reviews = {
+    books: booksWithReviews,
     hasLength: booksWithReviews.length,
     emptyText: 'No reviews written'
   }
 
-  const { hasLength, emptyText } = isMyReviews ? reviews : favorites
+  const { hasLength, emptyText, books } = isMyReviews ? reviews : favorites
   return hasLength ? (
     <BookList
-      books={isMyReviews ? booksWithReviews : favoriteBooks}
+      books={books}
       isLoading={isLoading}
       isMyReviews={isMyReviews}
       error={error}
