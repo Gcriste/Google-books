@@ -2,7 +2,6 @@ import type { BookType, SavedBook } from '@/app/types'
 
 export const useApi = () => {
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY
-  console.log('apiKey', { apiKey })
   if (!apiKey) {
     // eslint-disable-next-line no-console
     console.log('no api key found')
