@@ -19,16 +19,18 @@ export const useApi = () => {
     return data.items || []
   }
 
-  const getBookDetails = async (id: string): Promise<BookType | void> => {
+  const getBookDetails = async (id: string): Promise<BookType> => {
     const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`
     const response = await fetch(url)
-    try {
-      const data = response.json()
-      return data
-    } catch (err) {
-      console.log('Failed to fetch books', err)
-      return Promise.resolve()
+
+    if (!response.ok) {
+      // eslint-disable-next-line no-console
+      console.log('err', response)
+      throw new Error('Failed to fetch books')
     }
+
+    const data = response.json()
+    return data
   }
 
   const getAllFromDB = (): SavedBook | undefined => {
