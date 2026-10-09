@@ -3,7 +3,9 @@ import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'
 import { useCallback } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useUpdateBook } from '@/hooks/use-saved-books'
+import { useUser } from '@/hooks/use-user'
 import ReviewContainer from '../reviews/review-container'
 import { formatDate, formatPrice } from '@/helpers'
 import BookSkeleton from './book-skeleton'
@@ -17,6 +19,9 @@ type OwnProps = {
 
 const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   const { mutate: updateBook } = useUpdateBook()
+  const { isSignedIn } = useUser()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const {
     id,
@@ -45,9 +50,15 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   // optimistically by the mutation, so it can never drift out of sync.
   const handleClick = useCallback(
     (action: 'add' | 'remove') => () => {
+      // Saving needs an owner. Send signed-out visitors to log in and bring
+      // them back here, rather than letting the request fail with a 400.
+      if (!isSignedIn) {
+        router.push(`/login?next=${encodeURIComponent(pathname)}`)
+        return
+      }
       updateBook({ ...book, isFavorite: action === 'add' })
     },
-    [book, updateBook]
+    [book, isSignedIn, pathname, router, updateBook]
   )
 
   if (isLoading) return <BookSkeleton isDetails={isDetails} />

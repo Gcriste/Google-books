@@ -1,17 +1,27 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Menu, MenuItem, MenuItems } from '@headlessui/react'
 import { FaBars, FaTimes } from 'react-icons/fa'
-import { Box, Button } from '.'
+import { Box, Button, Text } from '.'
+import { useUser } from '@/hooks/use-user'
+import { signOut } from '@/lib/auth-client'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { displayName, isSignedIn } = useUser()
 
   const toggleMenu = useCallback(() => setIsOpen(prev => !prev), [])
+
+  const handleSignOut = useCallback(async () => {
+    await signOut()
+    router.push('/')
+    router.refresh()
+  }, [router])
 
   const primaryNavItems = [
     { name: 'Search', route: '/search', secondaryRoute: '/' },
@@ -44,6 +54,25 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+        </Box>
+
+        {/* Auth controls */}
+        <Box className="hidden md:flex items-center space-x-3">
+          {isSignedIn ? (
+            <>
+              <Text>Hi, {displayName}</Text>
+              <Button variant="outline" size="small" onClick={handleSignOut}>
+                Sign out
+              </Button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="px-3 py-2 rounded-md text-lg font-medium hover:text-accent text-primary transition duration-200"
+            >
+              Log in
+            </Link>
+          )}
         </Box>
 
         {/* Hamburger Icon */}
@@ -79,6 +108,25 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
               ))}
+              <MenuItem>
+                {isSignedIn ? (
+                  <Button
+                    variant="ghost"
+                    className="block px-3 py-2 text-lg font-medium text-primary"
+                    onClick={handleSignOut}
+                  >
+                    Sign out ({displayName})
+                  </Button>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="block px-3 py-2 rounded-md text-lg font-medium hover:text-accent text-primary transition duration-200"
+                    onClick={toggleMenu}
+                  >
+                    Log in
+                  </Link>
+                )}
+              </MenuItem>
             </MenuItems>
           </Menu>
         </Box>

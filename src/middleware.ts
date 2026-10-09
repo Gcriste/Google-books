@@ -1,31 +1,23 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { OWNER_COOKIE, OWNER_COOKIE_MAX_AGE } from '@/lib/constants'
+import { getSessionCookie } from 'better-auth/cookies'
 
 /**
- * Mints an anonymous owner id on first visit so saved books can be scoped to a
- * browser without a login. Replaced by a real session id if accounts are added.
+ * Keeps signed-out visitors out of the pages that show a personal shelf.
+ *
+ * This is an optimistic cookie check with no database call, so it is cheap
+ * enough to run on every matched request. It is NOT the security boundary —
+ * that is `getOwnerKey()`, which validates the session server-side on every
+ * API call. A forged cookie gets past this and then fails there.
  */
 export function middleware(request: NextRequest) {
-  if (request.cookies.get(OWNER_COOKIE)?.value) return NextResponse.next()
+  if (getSessionCookie(request)) return NextResponse.next()
 
-  const ownerKey = crypto.randomUUID()
-
-  // Set on the REQUEST so a route handler in this same request can read it...
-  request.cookies.set(OWNER_COOKIE, ownerKey)
-  const response = NextResponse.next({ request: { headers: request.headers } })
-
-  // ...and on the RESPONSE so the browser keeps it for later requests.
-  response.cookies.set(OWNER_COOKIE, ownerKey, {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: OWNER_COOKIE_MAX_AGE
-  })
-
-  return response
+  const loginUrl = new URL('/login', request.url)
+  loginUrl.searchParams.set('next', request.nextUrl.pathname)
+  return NextResponse.redirect(loginUrl)
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)']
+  matcher: ['/favorites/:path*', '/my-reviews/:path*']
 }

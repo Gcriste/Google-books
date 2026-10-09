@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { addReview, fetchSavedBooks, updateBook } from '@/services/saved-books'
 import type { BookType, NewReview, SavedBook } from '@/app/types'
 import { queryKeys } from './query-keys'
+import { useUser } from './use-user'
 
 /**
  * The app's saved books, fetched once and shared.
@@ -15,13 +16,18 @@ import { queryKeys } from './query-keys'
  * render from having to become async.
  */
 export const useSavedBooks = () => {
+  const { isSignedIn } = useUser()
+
   const {
     data: savedBooks = {},
     isLoading,
     error
   } = useQuery<SavedBook>({
     queryKey: queryKeys.savedBooks,
-    queryFn: fetchSavedBooks
+    queryFn: fetchSavedBooks,
+    // Saved books belong to an account. Without one the request would be a
+    // guaranteed 400, so don't make it — public pages just see an empty shelf.
+    enabled: isSignedIn
   })
 
   const getById = useCallback(
@@ -46,20 +52,28 @@ const selectWithReviews = (books: SavedBook): BookType[] =>
  * Shares `queryKeys.savedBooks` with `useSavedBooks`, so this adds no cache
  * entry and no extra request — it is a filtered view of the same fetch.
  */
-export const useFavoriteBooks = () =>
-  useQuery({
+export const useFavoriteBooks = () => {
+  const { isSignedIn } = useUser()
+
+  return useQuery({
     queryKey: queryKeys.savedBooks,
     queryFn: fetchSavedBooks,
-    select: selectFavorites
+    select: selectFavorites,
+    enabled: isSignedIn
   })
+}
 
 /** Saved books the user has written at least one review for. */
-export const useBooksWithReviews = () =>
-  useQuery({
+export const useBooksWithReviews = () => {
+  const { isSignedIn } = useUser()
+
+  return useQuery({
     queryKey: queryKeys.savedBooks,
     queryFn: fetchSavedBooks,
-    select: selectWithReviews
+    select: selectWithReviews,
+    enabled: isSignedIn
   })
+}
 
 /**
  * Writes share one cache-update strategy: every endpoint returns the full
