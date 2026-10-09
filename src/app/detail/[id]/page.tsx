@@ -2,25 +2,18 @@
 
 import { useParams } from 'next/navigation'
 
-import { useApi } from '@/api'
 import { Container, Text } from '@/components/common'
 import Book from '@/components/books/book'
-import { useQuery } from '@tanstack/react-query'
+import { useBookDetails } from '@/hooks/use-books'
+import { useSavedBooks } from '@/hooks/use-saved-books'
 
 const DetailPage = () => {
   const { id } = useParams()
-  const { getBookDetails, getByIdFromDB } = useApi()
-  const {
-    data: bookData,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['bookDetails', id],
-    queryFn: () => getBookDetails(id as string),
-    enabled: !!id
-  })
+  const { getById } = useSavedBooks()
+  const { data: bookData, isLoading, error } = useBookDetails(id as string)
 
-  const currentBook = getByIdFromDB(id as string) ?? bookData
+  // A saved copy wins over the API copy, so favorites and reviews show here.
+  const currentBook = getById(id as string) ?? bookData
   const isRefetchBook = currentBook?.id !== id
 
   return (

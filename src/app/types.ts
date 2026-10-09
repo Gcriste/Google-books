@@ -1,4 +1,4 @@
-type VolumeInfo = {
+export type VolumeInfo = {
   title: string
   subtitle?: string
   description?: string
@@ -13,7 +13,7 @@ type VolumeInfo = {
   publishedDate: string
 }
 
-type SaleInfo = {
+export type SaleInfo = {
   buyLink?: string
   listPrice?: { amount: number; currencyCode: string }
 }
@@ -25,6 +25,9 @@ export type Review = {
   lastUpdated: string
   rating: number
 }
+
+/** A review as submitted. The id and timestamp are the server's to assign. */
+export type NewReview = Pick<Review, 'title' | 'message' | 'rating'>
 
 export type BookType = {
   id: string

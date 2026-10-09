@@ -2,8 +2,8 @@
 import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'
-import { useCallback, useState } from 'react'
-import { useApi } from '@/api'
+import { useCallback } from 'react'
+import { useUpdateBook } from '@/hooks/use-saved-books'
 import ReviewContainer from '../reviews/review-container'
 import { formatDate, formatPrice } from '@/helpers'
 import BookSkeleton from './book-skeleton'
@@ -16,13 +16,11 @@ type OwnProps = {
 }
 
 const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
-  const { updateBook } = useApi()
-  const [isFavorite, setIsFavorite] = useState<boolean | undefined>(
-    book.isFavorite
-  )
+  const { mutate: updateBook } = useUpdateBook()
 
   const {
     id,
+    isFavorite,
     reviews,
     volumeInfo: {
       title,
@@ -43,11 +41,11 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
       ? `${cleanDescription?.slice(0, 500)}...view more`
       : cleanDescription
 
+  // Favorite state is read straight off the cached book and updated
+  // optimistically by the mutation, so it can never drift out of sync.
   const handleClick = useCallback(
     (action: 'add' | 'remove') => () => {
-      const isFavorite = action === 'add'
-      updateBook({ ...book, isFavorite })
-      setIsFavorite(prev => !prev)
+      updateBook({ ...book, isFavorite: action === 'add' })
     },
     [book, updateBook]
   )

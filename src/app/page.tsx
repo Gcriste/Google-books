@@ -1,48 +1,30 @@
-/* eslint-disable no-console */
 'use client'
 import { Container } from '@/components/common'
 import BookList from '@/components/books/book-list'
-import { useApi } from '@/api'
-import { useCallback, useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useCallback } from 'react'
 
 import type { FormValues } from './types'
 import SearchForm from '@/components/search-form'
 import { useBookContext } from '@/context/use-book-context'
+import { useBookSearch } from '@/hooks/use-books'
+import { useSavedBooks } from '@/hooks/use-saved-books'
 import type { UseFormReset } from 'react-hook-form'
 
 const HomePage = () => {
-  const { getByIdFromDB, searchBooks } = useApi()
   const { searchStr, setSearchStr } = useBookContext()
-  const [triggerQuery, setTriggerQuery] = useState<boolean>(false)
-
-  const {
-    data: searchedBooks,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['searchedBooks', searchStr],
-    queryFn: () => searchBooks(searchStr),
-    enabled: triggerQuery && !!searchStr
-  })
+  const { getById } = useSavedBooks()
+  const { data: searchedBooks, isLoading, error } = useBookSearch(searchStr)
 
   const handleSubmit = useCallback(
     (reset: UseFormReset<FormValues>) => (data: FormValues) => {
       setSearchStr(data.searchStr)
-      setTriggerQuery(true)
       reset()
     },
     [setSearchStr]
   )
 
-  useEffect(() => {
-    if (triggerQuery) {
-      setTriggerQuery(false)
-    }
-  }, [triggerQuery])
-
   const updatedBooks = (searchedBooks ?? []).map(
-    book => getByIdFromDB(book.id) ?? book
+    book => getById(book.id) ?? book
   )
 
   return (

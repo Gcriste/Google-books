@@ -1,10 +1,9 @@
 import { Box, Button, Flex, Pagination, Text } from '../common'
-import type { BookType, Review } from '@/app/types'
+import type { BookType, NewReview, Review } from '@/app/types'
 import Rating from './rating'
 import ReviewForm from './review-form'
-import { useMutation } from '@tanstack/react-query'
-import { useApi } from '@/api'
-import { useCallback, useState } from 'react'
+import { useAddReview } from '@/hooks/use-saved-books'
+import { useCallback, useMemo, useState } from 'react'
 
 type OwnProps = {
   book: BookType
@@ -13,12 +12,15 @@ type OwnProps = {
 }
 
 const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
-  const { updateBook } = useApi()
-  const [reviewList, setReviewList] = useState<Review[]>(reviews || [])
+  const { mutate: addReview, isPending, error } = useAddReview()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [showReviews, setShowReviews] = useState<boolean | undefined>(
     isMyReviews
   )
+
+  // Derived from the prop rather than held in state: the saved-books cache is
+  // the source of truth, so a new review flows back down on its own.
+  const reviewList = useMemo(() => reviews ?? [], [reviews])
 
   const totalPages = Math.ceil(reviewList.length / 5)
   const countPerPage = 5
@@ -36,12 +38,12 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
     setShowReviews(prev => !prev)
   }, [])
 
-  const { mutate: updateBookFromStorage, isPending } = useMutation({
-    mutationFn: updateBook,
-    onSuccess: updatedBooks => {
-      setReviewList(updatedBooks[book.id]?.reviews || [])
-    }
-  })
+  const handleAddReview = useCallback(
+    (review: NewReview) => {
+      addReview({ book, review })
+    },
+    [addReview, book]
+  )
 
   return (
     <>
@@ -98,10 +100,8 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
           />
         )}
       </Flex>
-      <ReviewForm
-        updateBookFromStorage={updateBookFromStorage}
-        bookId={book.id}
-      />
+      <ReviewForm onAddReview={handleAddReview} isPending={isPending} />
+      {error && <Text variant="error">{error.message}</Text>}
     </>
   )
 }

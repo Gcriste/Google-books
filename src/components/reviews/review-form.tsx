@@ -1,32 +1,16 @@
 'use client'
 import { useCallback } from 'react'
 import Rating from './rating'
-import type { BookType, FormValues } from '@/app/types'
-import { format } from 'date-fns/format'
+import type { FormValues, NewReview } from '@/app/types'
 import { Button, Flex, Text } from '../common'
-import { useQuery } from '@tanstack/react-query'
-import type { UseMutateFunction } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'next/navigation'
-import { useApi } from '@/api'
 
 type OwnProps = {
-  bookId: string
-  updateBookFromStorage: UseMutateFunction<
-    {
-      [x: string]: BookType
-    },
-    Error,
-    BookType,
-    unknown
-  >
+  onAddReview: (review: NewReview) => void
+  isPending?: boolean
 }
 
-const ReviewForm = ({ bookId, updateBookFromStorage }: OwnProps) => {
-  const { id: idFromParams } = useParams()
-  const id = idFromParams ?? bookId
-  const { getBookDetails, getByIdFromDB } = useApi()
-
+const ReviewForm = ({ onAddReview, isPending }: OwnProps) => {
   const {
     register,
     handleSubmit,
@@ -44,17 +28,6 @@ const ReviewForm = ({ bookId, updateBookFromStorage }: OwnProps) => {
   })
 
   const rating = watch('rating')
-  const {
-    data: bookData,
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['bookDetails'],
-    queryFn: () => getBookDetails(id as string),
-    enabled: !!id
-  })
-
-  const currentBook = getByIdFromDB(id as string) ?? bookData
 
   const handleRatingClick = useCallback(
     (selectedRating: number) => () => {
@@ -63,32 +36,26 @@ const ReviewForm = ({ bookId, updateBookFromStorage }: OwnProps) => {
     [setValue]
   )
 
-  const onSubmit = (data: FormValues) => {
-    if (data.rating === 0) {
-      setError('rating', {
-        type: 'manual',
-        message: 'Rating is required'
+  const onSubmit = useCallback(
+    (data: FormValues) => {
+      if (data.rating === 0) {
+        setError('rating', {
+          type: 'manual',
+          message: 'Rating is required'
+        })
+        return
+      }
+
+      // The book, the review id and the timestamp are all the server's job now.
+      onAddReview({
+        title: data.title,
+        message: data.reviewText,
+        rating: data.rating
       })
-      return
-    }
-    const { title, reviewText, rating } = data
-    const formattedDate = format(new Date(), 'MMMM dd, yyyy')
-    updateBookFromStorage({
-      ...((currentBook ?? {}) as BookType),
-      id: id as string,
-      reviews: [
-        ...(currentBook?.reviews ?? []),
-        {
-          id: crypto.randomUUID(),
-          title,
-          message: reviewText,
-          rating,
-          lastUpdated: formattedDate
-        }
-      ]
-    })
-    reset()
-  }
+      reset()
+    },
+    [onAddReview, reset, setError]
+  )
 
   return (
     <Flex direction="col" gap="gap-2">
@@ -116,8 +83,8 @@ const ReviewForm = ({ bookId, updateBookFromStorage }: OwnProps) => {
           <Text variant="error">{errors.reviewText.message}</Text>
         )}
         <Flex>
-          <Button type="submit" className="min-w-40">
-            Submit
+          <Button type="submit" className="min-w-40" disabled={isPending}>
+            {isPending ? 'Saving...' : 'Submit'}
           </Button>
         </Flex>
       </form>
