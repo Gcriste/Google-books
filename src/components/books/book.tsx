@@ -2,7 +2,7 @@
 import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useUpdateBook } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
 import ReviewContainer from '../reviews/review-container'
@@ -19,6 +19,7 @@ type OwnProps = {
 const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   const { mutate: updateBook } = useUpdateBook()
   const { isSignedIn } = useUser()
+  const [isViewMore, setIsViewMore] = useState(false)
 
   const {
     id,
@@ -39,8 +40,8 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
 
   const cleanDescription = description?.replace(/<[^>]*>/g, '') ?? ''
   const shortDescription =
-    !isDetails && !isMyReviews && cleanDescription.length > 500
-      ? `${cleanDescription?.slice(0, 500)}...view more`
+    !isViewMore && !isDetails && !isMyReviews && cleanDescription.length > 500
+      ? <>{cleanDescription?.slice(0, 500)}<button onClick={() => setIsViewMore(true)}>...view more</button></>
       : cleanDescription
 
   // Favorite state is read straight off the cached book and updated
