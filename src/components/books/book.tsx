@@ -39,11 +39,23 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
     saleInfo: { buyLink, listPrice }
   } = book
 
+  const handleViewMore = useCallback(() => {
+    setIsViewMore(true)
+  }, [])
+
   const cleanDescription = description?.replace(/<[^>]*>/g, '') ?? ''
   const shortDescription =
-    !isViewMore && !isDetails && !isMyReviews && cleanDescription.length > 500
-      ? <>{cleanDescription?.slice(0, 500)}<button onClick={() => setIsViewMore(true)}>...view more</button></>
-      : cleanDescription
+    !isViewMore &&
+    !isDetails &&
+    !isMyReviews &&
+    cleanDescription.length > 500 ? (
+      <>
+        {cleanDescription?.slice(0, 500)}
+        <button onClick={handleViewMore}>...view more</button>
+      </>
+    ) : (
+      cleanDescription
+    )
 
   // Favorite state is read straight off the cached book and updated
   // optimistically by the mutation, so it can never drift out of sync.
