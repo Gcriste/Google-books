@@ -73,7 +73,7 @@ const LoginForm = () => {
       }
 
       // `next` is set by middleware when it bounces a signed-out visitor.
-      router.push(searchParams.get('next') || '/favorites')
+      router.push(searchParams.get('next') || '/')
       router.refresh()
     },
     [isSignUp, router, searchParams]

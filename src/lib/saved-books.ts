@@ -11,11 +11,6 @@ import type {
 
 type Sql = NeonQueryFunction<false, false>
 
-/**
- * `Review.lastUpdated` is a pre-formatted display string in the app's types.
- * The database stores a real timestamptz, so it is formatted on the way out
- * and parsed on the way in (import only).
- */
 export const REVIEW_DATE_FORMAT = 'MMMM dd, yyyy'
 
 type ReviewRow = {
@@ -49,10 +44,6 @@ const toReview = ({
   lastUpdated: updatedAt ? format(new Date(updatedAt), REVIEW_DATE_FORMAT) : ''
 })
 
-/**
- * The single place where untyped driver rows become typed app objects. If a
- * column is renamed, this is the only function that needs to change.
- */
 const rowToBook = (row: SavedBookRow): BookType => ({
   id: row.book_id,
   isFavorite: row.is_favorite,
@@ -62,15 +53,6 @@ const rowToBook = (row: SavedBookRow): BookType => ({
   reviews: (row.reviews ?? []).map(toReview)
 })
 
-/**
- * Reads every book an owner has a relationship with -- favorited, reviewed, or
- * both -- with its reviews nested and `isFavorite` derived from whether a
- * `favorites` row exists.
- *
- * Driven off `owned` rather than scanning `books`, because `books` is global:
- * it holds every book any user has ever saved, so filtering it after the fact
- * would mean reading the whole table on every request.
- */
 export const selectSavedBooks = async (
   sql: Sql,
   ownerKey: string
@@ -115,14 +97,6 @@ export const selectSavedBooks = async (
   }, {})
 }
 
-/**
- * Caches a book's metadata. Shared by every user, so it carries no owner and
- * no favorite state -- favoriting and reviewing are separate rows in separate
- * tables, and neither can disturb the other.
- *
- * Returns the lazy query rather than awaiting it so callers can compose it
- * into `sql.transaction([...])`.
- */
 export const upsertBook = (sql: Sql, book: BookType) => sql`
   insert into books (book_id, volume_info, sale_info, self_link)
   values (
@@ -138,7 +112,6 @@ export const upsertBook = (sql: Sql, book: BookType) => sql`
     updated_at  = now()
 `
 
-/** Favorites a book. Idempotent, so double-clicking the button is harmless. */
 export const insertFavorite = (
   sql: Sql,
   ownerKey: string,
@@ -149,7 +122,6 @@ export const insertFavorite = (
   on conflict (owner_key, book_id) do nothing
 `
 
-/** Unfavorites a book. Reviews live in their own table and are unaffected. */
 export const deleteFavorite = (
   sql: Sql,
   ownerKey: string,
@@ -159,15 +131,6 @@ export const deleteFavorite = (
   where owner_key = ${ownerKey} and book_id = ${bookId}
 `
 
-/**
- * Reclaims a cached book once no user favorites or reviews it, so `books`
- * stays bounded to rows something actually points at.
- *
- * Safe by construction: both FKs are `on delete restrict`, so if this guard
- * were ever wrong the delete would fail rather than take reviews with it. The
- * worst real outcome is dropping a cache row the client re-sends on the next
- * favorite.
- */
 export const deleteBookIfUnreferenced = (sql: Sql, bookId: string) => sql`
   delete from books b
   where b.book_id = ${bookId}
