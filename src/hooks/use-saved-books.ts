@@ -2,7 +2,12 @@
 
 import { useCallback } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { addReview, fetchSavedBooks, updateBook } from '@/services/saved-books'
+import {
+  addReview,
+  fetchSavedBooks,
+  removeFavorite,
+  updateBook
+} from '@/services/saved-books'
 import type { BookType, NewReview, SavedBook } from '@/app/types'
 import { queryKeys } from './query-keys'
 import { useUser } from './use-user'
@@ -93,12 +98,15 @@ const useSavedBooksMutation = <TVariables>(
 }
 
 /**
- * Add or remove a favorite.
+ * Add a favorite.
  *
  * Updates the cache optimistically so the button flips immediately. That also
  * makes the cache the only source of truth for whether a book is favorited —
  * components must not mirror it in local state, which would go stale when the
  * saved-books query resolves after the first render.
+ *
+ * Removal is `useRemoveFavorite`, not this with `isFavorite: false` — the
+ * server treats the two as different operations.
  */
 export const useUpdateBook = () => {
   const queryClient = useQueryClient()
@@ -131,6 +139,42 @@ export const useUpdateBook = () => {
   })
 }
 
-/** Write a review, upserting the book if it was never saved. */
+/**
+ * Remove a favorite.
+ *
+ * Mirrors `useUpdateBook`'s optimistic pattern, applying the same rule the
+ * server applies: a book with reviews stays in the map unfavorited (it is
+ * still the user's, and /my-reviews shows it), while one without reviews
+ * leaves the map entirely because the server deletes it outright.
+ */
+export const useRemoveFavorite = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: removeFavorite,
+    onMutate: async (book: BookType) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.savedBooks })
+      const previous = queryClient.getQueryData<SavedBook>(queryKeys.savedBooks)
+
+      queryClient.setQueryData<SavedBook>(queryKeys.savedBooks, current => {
+        const { [book.id]: removed, ...rest } = current ?? {}
+        if (!removed?.reviews?.length) return rest
+
+        return { ...rest, [book.id]: { ...removed, isFavorite: false } }
+      })
+
+      return { previous }
+    },
+    onError: (_error, _book, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(queryKeys.savedBooks, context.previous)
+      }
+    },
+    onSuccess: savedBooks =>
+      queryClient.setQueryData(queryKeys.savedBooks, savedBooks)
+  })
+}
+
+/** Write a review, caching the book if it was never saved. */
 export const useAddReview = () =>
   useSavedBooksMutation<{ book: BookType; review: NewReview }>(addReview)

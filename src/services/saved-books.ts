@@ -10,13 +10,17 @@ import type { BookType, NewReview, SavedBook } from '@/app/types'
 
 const sendJson = async <T>(
   url: string,
-  method: 'POST' | 'PUT',
-  body: unknown
+  method: 'POST' | 'PUT' | 'DELETE',
+  body?: unknown
 ): Promise<T> => {
   const response = await fetch(url, {
     method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    ...(body === undefined
+      ? {}
+      : {
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        })
   })
 
   if (!response.ok) {
@@ -44,6 +48,13 @@ export const fetchSavedBooks = async (): Promise<SavedBook> => {
  */
 export const updateBook = (book: BookType): Promise<SavedBook> =>
   sendJson(`/api/saved-books/${book.id}`, 'PUT', book)
+
+/**
+ * Unfavorites a book. The server also drops the cached book entirely when no
+ * reviews reference it, so the returned map may simply not contain it.
+ */
+export const removeFavorite = (book: BookType): Promise<SavedBook> =>
+  sendJson(`/api/saved-books/${book.id}`, 'DELETE')
 
 export const addReview = ({
   book,

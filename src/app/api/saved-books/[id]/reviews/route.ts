@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSql } from '@/lib/db'
 import { getOwnerKey } from '@/lib/owner'
-import {
-  insertReview,
-  selectSavedBooks,
-  upsertBookKeepingFavorite
-} from '@/lib/saved-books'
+import { insertReview, selectSavedBooks, upsertBook } from '@/lib/saved-books'
 import type { BookType } from '@/app/types'
 
 export const dynamic = 'force-dynamic'
@@ -18,8 +14,8 @@ type ReviewPayload = {
 }
 
 /**
- * Adds a review. The book is upserted first because a review can be written
- * for a book that was never favorited, and the foreign key requires the row.
+ * Adds a review. The book is cached first because a review can be written for
+ * a book nobody has saved yet, and the foreign key requires the row.
  */
 export async function POST(request: Request, { params }: RouteContext) {
   const ownerKey = await getOwnerKey()
@@ -52,7 +48,7 @@ export async function POST(request: Request, { params }: RouteContext) {
 
   const sql = getSql()
   await sql.transaction([
-    upsertBookKeepingFavorite(sql, ownerKey, { ...book, id }),
+    upsertBook(sql, { ...book, id }),
     insertReview(sql, ownerKey, id, review)
   ])
 

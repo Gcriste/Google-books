@@ -62,15 +62,28 @@ const rowToBook = (row: SavedBookRow): BookType => ({
   reviews: (row.reviews ?? []).map(toReview)
 })
 
-/** Reads every saved book for an owner, with its reviews nested. */
+/**
+ * Reads every book an owner has a relationship with -- favorited, reviewed, or
+ * both -- with its reviews nested and `isFavorite` derived from whether a
+ * `favorites` row exists.
+ *
+ * Driven off `owned` rather than scanning `books`, because `books` is global:
+ * it holds every book any user has ever saved, so filtering it after the fact
+ * would mean reading the whole table on every request.
+ */
 export const selectSavedBooks = async (
   sql: Sql,
   ownerKey: string
 ): Promise<SavedBook> => {
   const rows = (await sql`
+    with owned as (
+      select book_id from favorites where owner_key = ${ownerKey}
+      union
+      select book_id from reviews where owner_key = ${ownerKey}
+    )
     select
       b.book_id,
-      b.is_favorite,
+      (f.owner_key is not null) as is_favorite,
       b.volume_info,
       b.sale_info,
       b.self_link,
@@ -87,11 +100,13 @@ export const selectSavedBooks = async (
         ) filter (where r.id is not null),
         '[]'
       ) as reviews
-    from saved_books b
+    from owned o
+    join books b on b.book_id = o.book_id
+    left join favorites f
+      on f.book_id = o.book_id and f.owner_key = ${ownerKey}
     left join reviews r
-      on r.owner_key = b.owner_key and r.book_id = b.book_id
-    where b.owner_key = ${ownerKey}
-    group by b.book_id, b.is_favorite, b.volume_info, b.sale_info, b.self_link
+      on r.book_id = o.book_id and r.owner_key = ${ownerKey}
+    group by b.book_id, f.owner_key, b.volume_info, b.sale_info, b.self_link
   `) as SavedBookRow[]
 
   return rows.reduce<SavedBook>((acc, row) => {
@@ -101,62 +116,63 @@ export const selectSavedBooks = async (
 }
 
 /**
- * Upserts a book and sets its favorite flag. For the favorite toggle, where
- * `isFavorite` is the whole point of the write.
+ * Caches a book's metadata. Shared by every user, so it carries no owner and
+ * no favorite state -- favoriting and reviewing are separate rows in separate
+ * tables, and neither can disturb the other.
  *
  * Returns the lazy query rather than awaiting it so callers can compose it
  * into `sql.transaction([...])`.
  */
-export const upsertBookWithFavorite = (
-  sql: Sql,
-  ownerKey: string,
-  book: BookType
-) => sql`
-  insert into saved_books
-    (owner_key, book_id, is_favorite, volume_info, sale_info, self_link)
+export const upsertBook = (sql: Sql, book: BookType) => sql`
+  insert into books (book_id, volume_info, sale_info, self_link)
   values (
-    ${ownerKey},
     ${book.id},
-    ${book.isFavorite ?? false},
     ${JSON.stringify(book.volumeInfo ?? {})}::jsonb,
     ${JSON.stringify(book.saleInfo ?? {})}::jsonb,
     ${book.selfLink ?? null}
   )
-  on conflict (owner_key, book_id) do update set
-    is_favorite = excluded.is_favorite,
+  on conflict (book_id) do update set
     volume_info = excluded.volume_info,
     sale_info   = excluded.sale_info,
     self_link   = excluded.self_link,
     updated_at  = now()
 `
 
-/**
- * Upserts a book while leaving an existing favorite flag alone.
- *
- * Used when writing a review: the client may hold a copy of the book fetched
- * from the Google Books API, which carries no `isFavorite`, and reviewing a
- * book must never silently un-favorite it.
- */
-export const upsertBookKeepingFavorite = (
+/** Favorites a book. Idempotent, so double-clicking the button is harmless. */
+export const insertFavorite = (
   sql: Sql,
   ownerKey: string,
-  book: BookType
+  bookId: string
 ) => sql`
-  insert into saved_books
-    (owner_key, book_id, is_favorite, volume_info, sale_info, self_link)
-  values (
-    ${ownerKey},
-    ${book.id},
-    ${book.isFavorite ?? false},
-    ${JSON.stringify(book.volumeInfo ?? {})}::jsonb,
-    ${JSON.stringify(book.saleInfo ?? {})}::jsonb,
-    ${book.selfLink ?? null}
-  )
-  on conflict (owner_key, book_id) do update set
-    volume_info = excluded.volume_info,
-    sale_info   = excluded.sale_info,
-    self_link   = excluded.self_link,
-    updated_at  = now()
+  insert into favorites (owner_key, book_id)
+  values (${ownerKey}, ${bookId})
+  on conflict (owner_key, book_id) do nothing
+`
+
+/** Unfavorites a book. Reviews live in their own table and are unaffected. */
+export const deleteFavorite = (
+  sql: Sql,
+  ownerKey: string,
+  bookId: string
+) => sql`
+  delete from favorites
+  where owner_key = ${ownerKey} and book_id = ${bookId}
+`
+
+/**
+ * Reclaims a cached book once no user favorites or reviews it, so `books`
+ * stays bounded to rows something actually points at.
+ *
+ * Safe by construction: both FKs are `on delete restrict`, so if this guard
+ * were ever wrong the delete would fail rather than take reviews with it. The
+ * worst real outcome is dropping a cache row the client re-sends on the next
+ * favorite.
+ */
+export const deleteBookIfUnreferenced = (sql: Sql, bookId: string) => sql`
+  delete from books b
+  where b.book_id = ${bookId}
+    and not exists (select 1 from favorites f where f.book_id = b.book_id)
+    and not exists (select 1 from reviews r where r.book_id = b.book_id)
 `
 
 export const insertReview = (

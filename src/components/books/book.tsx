@@ -3,7 +3,7 @@ import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'
 import { useCallback, useState } from 'react'
-import { useUpdateBook } from '@/hooks/use-saved-books'
+import { useRemoveFavorite, useUpdateBook } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
 import ReviewContainer from '../reviews/review-container'
 import { formatDate, formatPrice } from '@/helpers'
@@ -18,6 +18,7 @@ type OwnProps = {
 
 const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   const { mutate: updateBook } = useUpdateBook()
+  const { mutate: removeFavorite } = useRemoveFavorite()
   const { isSignedIn } = useUser()
   const [isViewMore, setIsViewMore] = useState(false)
 
@@ -46,11 +47,17 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
 
   // Favorite state is read straight off the cached book and updated
   // optimistically by the mutation, so it can never drift out of sync.
+  //
+  // Removing is a different operation, not the same write with a false flag:
+  // a book with no reviews is deleted outright, so it leaves the cache
+  // entirely rather than lingering as an unfavorited row.
   const handleClick = useCallback(
     (action: 'add' | 'remove') => () => {
-      updateBook({ ...book, isFavorite: action === 'add' })
+      if (action === 'remove') return removeFavorite(book)
+
+      updateBook({ ...book, isFavorite: true })
     },
-    [book, updateBook]
+    [book, removeFavorite, updateBook]
   )
 
   if (isLoading) return <BookSkeleton isDetails={isDetails} />
