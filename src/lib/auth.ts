@@ -25,7 +25,15 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       firstName: { type: 'string', required: true, input: true },
-      lastName: { type: 'string', required: true, input: true }
+      lastName: { type: 'string', required: true, input: true },
+      // Optional, hence `required: false` -- which also keeps the columns
+      // nullable if the better-auth CLI ever regenerates the schema.
+      addressLine1: { type: 'string', required: false, input: true },
+      addressLine2: { type: 'string', required: false, input: true },
+      addressCity: { type: 'string', required: false, input: true },
+      addressState: { type: 'string', required: false, input: true },
+      addressPostalCode: { type: 'string', required: false, input: true },
+      addressCountry: { type: 'string', required: false, input: true }
     }
   }
 })

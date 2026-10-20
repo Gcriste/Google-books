@@ -14,6 +14,12 @@ create table "user" (
   "email" text not null unique,
   "emailVerified" boolean not null,
   "image" text,
+  "addressLine1" text,
+  "addressLine2" text,
+  "addressCity" text,
+  "addressState" text,
+  "addressPostalCode" text,
+  "addressCountry" text,
   "createdAt" timestamptz default CURRENT_TIMESTAMP not null,
   "updatedAt" timestamptz default CURRENT_TIMESTAMP not null
 );

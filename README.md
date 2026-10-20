@@ -19,8 +19,18 @@ git clone https://github.com/Gcriste/Google-books.git
 ### 2. Install dependencies:
 npm install or yarn
 ### 3. Set up environment variables:
+```
 GOOGLE_BOOKS_API_KEY=your-api-key-here
-### 4. Run development server locally: 
+DATABASE_URL=            # Neon pooled connection string (host contains -pooler)
+BETTER_AUTH_SECRET=      # any long random string
+BETTER_AUTH_URL=         # e.g. http://localhost:3000
+```
+### 4. Apply the database schema:
+A fresh database needs `db/schema.sql` and `db/auth-schema.sql`. An existing one
+needs the deltas in `db/migrations/` applied in order — currently
+`001-user-first-last-name.sql` and `002-user-address.sql`. Run them in the Neon
+SQL editor.
+### 5. Run development server locally: 
 npm run dev
 
 

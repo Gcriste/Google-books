@@ -3,11 +3,19 @@
 import { useCallback, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Menu, MenuItem, MenuItems } from '@headlessui/react'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { FaBars, FaChevronDown, FaTimes } from 'react-icons/fa'
 import { Box, Button, Text } from '.'
 import { useUser } from '@/hooks/use-user'
 import { signOut } from '@/lib/auth-client'
+
+// Module scope: plain strings, so no new prop identity on each render.
+const MENU_PANEL_CLASS =
+  'absolute right-0 z-50 mt-2 w-44 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none'
+const MENU_ITEM_CLASS =
+  'block w-full px-4 py-2 text-left text-base text-primary transition duration-200 data-[focus]:bg-accent data-[focus]:text-secondary'
+const MOBILE_ITEM_CLASS =
+  'block w-full px-3 py-2 text-left rounded-md text-lg font-medium hover:text-accent text-primary transition duration-200'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -62,12 +70,28 @@ const Navbar = () => {
         {/* Auth controls */}
         <Box className="hidden md:flex items-center space-x-3">
           {isSignedIn ? (
-            <>
-              <Text>Hi, {displayName}</Text>
-              <Button variant="outline" size="small" onClick={handleSignOut}>
-                Sign out
-              </Button>
-            </>
+            <Menu as="div" className="relative">
+              <MenuButton className="flex items-center gap-2 rounded-md px-2 py-1 text-primary hover:text-accent focus:outline-none transition duration-200">
+                <Text>Hi, {displayName}</Text>
+                <FaChevronDown className="h-3 w-3" aria-hidden />
+              </MenuButton>
+              <MenuItems className={MENU_PANEL_CLASS}>
+                <MenuItem>
+                  <Link href="/profile" className={MENU_ITEM_CLASS}>
+                    Profile
+                  </Link>
+                </MenuItem>
+                <MenuItem>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className={MENU_ITEM_CLASS}
+                  >
+                    Sign out
+                  </button>
+                </MenuItem>
+              </MenuItems>
+            </Menu>
           ) : (
             <Link
               href="/login"
@@ -116,25 +140,38 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
               ))}
-              <MenuItem>
-                {isSignedIn ? (
-                  <Button
-                    variant="ghost"
-                    className="block px-3 py-2 text-lg font-medium text-primary"
-                    onClick={handleSignOut}
-                  >
-                    Sign out ({displayName})
-                  </Button>
-                ) : (
+              {isSignedIn ? (
+                <>
+                  <MenuItem>
+                    <Link
+                      href="/profile"
+                      className={MOBILE_ITEM_CLASS}
+                      onClick={toggleMenu}
+                    >
+                      Profile
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <button
+                      type="button"
+                      className={MOBILE_ITEM_CLASS}
+                      onClick={handleSignOut}
+                    >
+                      Sign out ({displayName})
+                    </button>
+                  </MenuItem>
+                </>
+              ) : (
+                <MenuItem>
                   <Link
                     href="/login"
-                    className="block px-3 py-2 rounded-md text-lg font-medium hover:text-accent text-primary transition duration-200"
+                    className={MOBILE_ITEM_CLASS}
                     onClick={toggleMenu}
                   >
                     Log in
                   </Link>
-                )}
-              </MenuItem>
+                </MenuItem>
+              )}
             </MenuItems>
           </Menu>
         </Box>
