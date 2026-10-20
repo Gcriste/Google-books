@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from '@/lib/auth-client'
+import { useSession } from '@/services/auth'
 
 export const useUser = () => {
   const { data: session, isPending } = useSession()

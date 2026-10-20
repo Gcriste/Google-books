@@ -23,6 +23,9 @@ export const auth = betterAuth({
     enabled: true
   },
   user: {
+    // Mirrored by hand in `src/services/auth.ts` (the browser client cannot
+    // infer `typeof auth` without pulling this server-only module into the
+    // client graph). Edit both or the extra fields go untyped on the client.
     additionalFields: {
       firstName: { type: 'string', required: true, input: true },
       lastName: { type: 'string', required: true, input: true },

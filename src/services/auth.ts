@@ -2,8 +2,11 @@ import { createAuthClient } from 'better-auth/react'
 import { inferAdditionalFields } from 'better-auth/client/plugins'
 
 /**
- * Browser-side auth client. Deliberately NOT marked `server-only` — unlike its
- * siblings in this folder, this one is meant for client components.
+ * Browser-side auth client — a typed transport over `/api/auth/*`, which is
+ * served by `src/lib/auth.ts` via `src/app/api/auth/[...all]/route.ts`.
+ *
+ * Lives here rather than in `src/lib/` because everything in that folder is
+ * `server-only`; this is the client half.
  *
  * The extra user fields are declared explicitly rather than inferred from
  * `typeof auth`: inferring would pull the server module (which carries

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
-import { updateUser } from '@/lib/auth-client'
+import { updateUser } from '@/services/auth'
 
 export type ProfileValues = {
   firstName: string

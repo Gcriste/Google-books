@@ -7,7 +7,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { FaBars, FaChevronDown, FaTimes } from 'react-icons/fa'
 import { Box, Button, Text } from '.'
 import { useUser } from '@/hooks/use-user'
-import { signOut } from '@/lib/auth-client'
+import { signOut } from '@/services/auth'
 
 // Module scope: plain strings, so no new prop identity on each render.
 const MENU_PANEL_CLASS =

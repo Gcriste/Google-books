@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, Flex, Text } from '../common'
-import { signIn, signUp } from '@/lib/auth-client'
+import { signIn, signUp } from '@/services/auth'
 
 type AuthFormValues = {
   firstName: string
