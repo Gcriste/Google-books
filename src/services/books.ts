@@ -12,12 +12,41 @@ if (!apiKey) {
   console.error('no api key found')
 }
 
+/**
+ * A failed Google Books response, carrying the status code.
+ *
+ * The status is what lets `use-books.ts` tell a retryable upstream failure from
+ * a request we got wrong. The `/volumes` search endpoint returns a large share
+ * of `503 Service temporarily unavailable` (`reason: backendFailed`) — a
+ * Google-side fault that clears on a retry a second or two later. A 4xx is the
+ * opposite: the same request will fail the same way forever.
+ *
+ * Without the status both look identical, which is why this previously read as
+ * an intermittent mystery rather than an upstream outage.
+ */
+export class BooksApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number
+  ) {
+    super(message)
+    this.name = 'BooksApiError'
+  }
+}
+
 export const searchBooks = async (searchStr: string): Promise<BookType[]> => {
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${searchStr}&key=${apiKey}`
+  // Encoded, not interpolated raw: an unescaped `&`, `#` or `+` in the search
+  // term silently truncates or corrupts the query string.
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    searchStr
+  )}&key=${apiKey}`
   const response = await fetch(url)
 
   if (!response.ok) {
-    throw new Error('Failed to fetch books')
+    throw new BooksApiError(
+      `Google Books search failed (${response.status})`,
+      response.status
+    )
   }
 
   const data = await response.json()
@@ -25,12 +54,16 @@ export const searchBooks = async (searchStr: string): Promise<BookType[]> => {
 }
 
 export const getBookDetails = async (id: string): Promise<BookType> => {
-  const url = `https://www.googleapis.com/books/v1/volumes/${id}?key=${apiKey}`
+  const url = `https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(
+    id
+  )}?key=${apiKey}`
   const response = await fetch(url)
 
   if (!response.ok) {
-    console.error('err', response)
-    throw new Error('Failed to fetch books')
+    throw new BooksApiError(
+      `Google Books lookup failed (${response.status})`,
+      response.status
+    )
   }
 
   const data = await response.json()
