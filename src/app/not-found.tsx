@@ -1,5 +1,6 @@
 import { Box } from '@/components/common'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import * as React from 'react'
 import { RiAlarmWarningFill } from 'react-icons/ri'
 
@@ -17,7 +18,7 @@ const NotFound = () => {
             className="drop-shadow-glow animate-flicker text-red-500"
           />
           <h1 className="mt-8 text-4xl md:text-6xl">Page Not Found</h1>
-          {/* <Link href="/">Back to home</Link> */}
+          <Link href="/">Back to home</Link>
         </Box>
       </section>
     </main>
