@@ -3,7 +3,6 @@ import type { BookType } from '@/app/types'
 import Link from 'next/link'
 import { Box, Button, Flex, Text } from '../common'
 import { useCallback } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
 import { useUpdateBook } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
 import ReviewContainer from '../reviews/review-container'
@@ -20,8 +19,6 @@ type OwnProps = {
 const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   const { mutate: updateBook } = useUpdateBook()
   const { isSignedIn } = useUser()
-  const router = useRouter()
-  const pathname = usePathname()
 
   const {
     id,
@@ -50,15 +47,9 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   // optimistically by the mutation, so it can never drift out of sync.
   const handleClick = useCallback(
     (action: 'add' | 'remove') => () => {
-      // Saving needs an owner. Send signed-out visitors to log in and bring
-      // them back here, rather than letting the request fail with a 400.
-      if (!isSignedIn) {
-        router.push(`/login?next=${encodeURIComponent(pathname)}`)
-        return
-      }
       updateBook({ ...book, isFavorite: action === 'add' })
     },
-    [book, isSignedIn, pathname, router, updateBook]
+    [book, updateBook]
   )
 
   if (isLoading) return <BookSkeleton isDetails={isDetails} />
@@ -70,17 +61,19 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
           {imageLinks && (
             <img src={imageLinks.thumbnail} alt={title} width="150em" />
           )}
-          <Box>
-            {isFavorite ? (
-              <Button variant="danger" onClick={handleClick('remove')}>
-                Remove from favorites
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={handleClick('add')}>
-                Add to favorites
-              </Button>
-            )}
-          </Box>
+          {isSignedIn && (
+            <Box>
+              {isFavorite ? (
+                <Button variant="danger" onClick={handleClick('remove')}>
+                  Remove from favorites
+                </Button>
+              ) : (
+                <Button variant="primary" onClick={handleClick('add')}>
+                  Add to favorites
+                </Button>
+              )}
+            </Box>
+          )}
         </Flex>
         <Flex direction="col" gap="gap-2">
           <Flex align="center">

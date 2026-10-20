@@ -4,7 +4,6 @@ import Rating from './rating'
 import ReviewForm from './review-form'
 import { useAddReview } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
-import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
 type OwnProps = {
@@ -16,8 +15,6 @@ type OwnProps = {
 const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
   const { mutate: addReview, isPending, error } = useAddReview()
   const { isSignedIn } = useUser()
-  const router = useRouter()
-  const pathname = usePathname()
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [showReviews, setShowReviews] = useState<boolean | undefined>(
     isMyReviews
@@ -45,15 +42,12 @@ const ReviewContainer = ({ book, reviews, isMyReviews }: OwnProps) => {
 
   const handleAddReview = useCallback(
     (review: NewReview) => {
-      // Reviews belong to an owner, so a signed-out visitor logs in first.
-      if (!isSignedIn) {
-        router.push(`/login?next=${encodeURIComponent(pathname)}`)
-        return
-      }
       addReview({ book, review })
     },
-    [addReview, book, isSignedIn, pathname, router]
+    [addReview, book]
   )
+
+  if (!isSignedIn) return null
 
   return (
     <>

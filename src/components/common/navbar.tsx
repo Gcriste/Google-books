@@ -25,8 +25,8 @@ const Navbar = () => {
 
   const primaryNavItems = [
     { name: 'Search', route: '/search', secondaryRoute: '/' },
-    { name: 'Favorites', route: '/favorites' },
-    { name: 'My Reviews', route: '/my-reviews' }
+    { name: 'Favorites', route: '/favorites', hidden: !isSignedIn },
+    { name: 'My Reviews', route: '/my-reviews', hidden: !isSignedIn }
   ]
 
   return (
@@ -41,19 +41,22 @@ const Navbar = () => {
 
         {/* Primary Navigation */}
         <Box className="hidden md:flex space-x-4">
-          {primaryNavItems.map(item => (
-            <Link
-              key={item.name}
-              href={item.route}
-              className={`px-3 py-2 rounded-md text-lg font-medium ${
-                pathname === item.route || pathname === item.secondaryRoute
-                  ? 'bg-secondary text-white hover:text-white'
-                  : 'hover:text-accent text-primary'
-              } transition duration-200`}
-            >
-              {item.name}
-            </Link>
-          ))}
+          {primaryNavItems
+            .filter(item => !item.hidden)
+            .map(filteredItem => (
+              <Link
+                key={filteredItem.name}
+                href={filteredItem.route}
+                className={`px-3 py-2 rounded-md text-lg font-medium ${
+                  pathname === filteredItem.route ||
+                  pathname === filteredItem.secondaryRoute
+                    ? 'bg-secondary text-white hover:text-white'
+                    : 'hover:text-accent text-primary'
+                } transition duration-200`}
+              >
+                {filteredItem.name}
+              </Link>
+            ))}
         </Box>
 
         {/* Auth controls */}
@@ -68,7 +71,12 @@ const Navbar = () => {
           ) : (
             <Link
               href="/login"
-              className="px-3 py-2 rounded-md text-lg font-medium hover:text-accent text-primary transition duration-200"
+              className={`px-3 py-2 rounded-md text-lg font-medium transition duration-200 ${
+                pathname === '/login'
+                  ? 'bg-secondary text-white hover:text-white'
+                  : 'hover:text-accent text-primary'
+              } 
+              `}
             >
               Log in
             </Link>
