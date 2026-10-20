@@ -1,5 +1,5 @@
 import Book from './book'
-import { Box, Divider, Text } from '../common'
+import { Box, Divider, Text } from '../../common'
 import type { BookType } from '@/app/types'
 import BookSkeleton from './book-skeleton'
 

@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from './common'
+import { Button, Flex, Text } from '../common'
 import type { SubmitHandler, UseFormReset } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import type { FormValues } from '@/app/types'

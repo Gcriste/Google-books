@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import type { BookType } from '@/app/types'
 import Link from 'next/link'
-import { Box, Button, Flex, Text } from '../common'
+import { Box, Button, Flex, Text } from '../../common'
 import { useCallback, useState } from 'react'
 import { useRemoveFavorite, useUpdateBook } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
-import ReviewContainer from '../reviews/review-container'
+import ReviewContainer from '../../reviews/review-container'
 import { formatDate, formatPrice } from '@/helpers'
 import BookSkeleton from './book-skeleton'
 

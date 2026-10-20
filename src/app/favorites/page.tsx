@@ -1,7 +1,7 @@
 'use client'
 
 import { Container } from '@/components/common'
-import SavedBooksContainer from '@/components/saved-books-container'
+import SavedBooksContainer from '@/components/shared/saved-books-container'
 import { useFavoriteBooks } from '@/hooks/use-saved-books'
 import type { BookType } from '@/app/types'
 

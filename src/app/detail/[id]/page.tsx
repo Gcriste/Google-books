@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation'
 
 import { Container, Text } from '@/components/common'
-import Book from '@/components/books/book'
+import Book from '@/components/shared/books/book'
 import { useBookDetails } from '@/hooks/use-books'
 import { useSavedBooks } from '@/hooks/use-saved-books'
 

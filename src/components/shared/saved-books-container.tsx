@@ -1,5 +1,5 @@
 import BookList from './books/book-list'
-import { Text } from './common'
+import { Text } from '../common'
 import type { BookType } from '@/app/types'
 
 type OwnProps = {

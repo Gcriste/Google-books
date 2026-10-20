@@ -1,4 +1,4 @@
-import { Box, Flex } from '../common'
+import { Box, Flex } from '../../common'
 
 type OwnProps = {
   isDetails?: boolean

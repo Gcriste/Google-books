@@ -1,10 +1,10 @@
 'use client'
 import { Container } from '@/components/common'
-import BookList from '@/components/books/book-list'
+import BookList from '@/components/shared/books/book-list'
 import { useCallback } from 'react'
 
 import type { FormValues } from './types'
-import SearchForm from '@/components/search-form'
+import SearchForm from '@/components/search/search-form'
 import { useBookContext } from '@/context/use-book-context'
 import { useBookSearch } from '@/hooks/use-books'
 import { useSavedBooks } from '@/hooks/use-saved-books'

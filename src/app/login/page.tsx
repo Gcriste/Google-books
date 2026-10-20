@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react'
 import { Container } from '@/components/common'
-import LoginForm from '@/components/auth/login-form'
+import LoginForm from '@/components/login/login-form'
 
 /**
  * `useSearchParams` (for the `next` redirect target) requires a Suspense
