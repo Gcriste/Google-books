@@ -12,7 +12,7 @@ const DetailPage = () => {
   const { getById } = useSavedBooks()
   const { data: bookData, isLoading, error } = useBookDetails(id as string)
 
-  // A saved copy wins over the API copy, so favorites and reviews show here.
+  // A saved copy wins over the API copy, so favorites and notes show here.
   const currentBook = getById(id as string) ?? bookData
   const isRefetchBook = currentBook?.id !== id
 

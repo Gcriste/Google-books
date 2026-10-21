@@ -5,7 +5,7 @@ import { Box, Button, Flex, Text } from '../../common'
 import { useCallback, useState } from 'react'
 import { useRemoveFavorite, useUpdateBook } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
-import ReviewContainer from '../../reviews/review-container'
+import NoteContainer from '../../notes/note-container'
 import { formatDate, formatPrice } from '@/helpers'
 import BookSkeleton from './book-skeleton'
 
@@ -13,10 +13,10 @@ type OwnProps = {
   book: BookType
   isLoading?: boolean
   isDetails?: boolean
-  isMyReviews?: boolean
+  isMyNotes?: boolean
 }
 
-const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
+const Book = ({ book, isLoading, isDetails, isMyNotes }: OwnProps) => {
   const { mutate: updateBook } = useUpdateBook()
   const { mutate: removeFavorite } = useRemoveFavorite()
   const { isSignedIn } = useUser()
@@ -25,7 +25,7 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   const {
     id,
     isFavorite,
-    reviews,
+    notes,
     volumeInfo: {
       title,
       authors,
@@ -45,10 +45,7 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
 
   const cleanDescription = description?.replace(/<[^>]*>/g, '') ?? ''
   const shortDescription =
-    !isViewMore &&
-    !isDetails &&
-    !isMyReviews &&
-    cleanDescription.length > 500 ? (
+    !isViewMore && !isDetails && !isMyNotes && cleanDescription.length > 500 ? (
       <>
         {cleanDescription?.slice(0, 500)}
         <button onClick={handleViewMore}>...view more</button>
@@ -61,7 +58,7 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
   // optimistically by the mutation, so it can never drift out of sync.
   //
   // Removing is a different operation, not the same write with a false flag:
-  // a book with no reviews is deleted outright, so it leaves the cache
+  // a book with no notes is deleted outright, so it leaves the cache
   // entirely rather than lingering as an unfavorited row.
   const handleClick = useCallback(
     (action: 'add' | 'remove') => () => {
@@ -129,12 +126,8 @@ const Book = ({ book, isLoading, isDetails, isMyReviews }: OwnProps) => {
           </Flex>
         </Flex>
       )}
-      {isDetails || isMyReviews ? (
-        <ReviewContainer
-          book={book}
-          reviews={reviews}
-          isMyReviews={isMyReviews}
-        />
+      {isDetails || isMyNotes ? (
+        <NoteContainer book={book} notes={notes} isMyNotes={isMyNotes} />
       ) : (
         <Link
           href={`/detail/${id}`}

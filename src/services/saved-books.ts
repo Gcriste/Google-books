@@ -1,4 +1,4 @@
-import type { BookType, NewReview, SavedBook } from '@/app/types'
+import type { BookType, NewNote, SavedBook } from '@/app/types'
 
 const sendJson = async <T>(
   url: string,
@@ -39,11 +39,11 @@ export const updateBook = (book: BookType): Promise<SavedBook> =>
 export const removeFavorite = (book: BookType): Promise<SavedBook> =>
   sendJson(`/api/saved-books/${book.id}`, 'DELETE')
 
-export const addReview = ({
+export const addNote = ({
   book,
-  review
+  note
 }: {
   book: BookType
-  review: NewReview
+  note: NewNote
 }): Promise<SavedBook> =>
-  sendJson(`/api/saved-books/${book.id}/reviews`, 'POST', { book, review })
+  sendJson(`/api/saved-books/${book.id}/notes`, 'POST', { book, note })

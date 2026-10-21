@@ -47,9 +47,9 @@ export async function PUT(request: Request, { params }: RouteContext) {
  * Unfavorites a book, dropping the cached metadata too once nothing else
  * points at it. Takes no body -- the id in the path is all it needs.
  *
- * A book the owner has reviewed keeps its `books` row (the guard inside
- * `deleteBookIfUnreferenced` sees the review), so it stays on /my-reviews
- * with its reviews intact.
+ * A book the owner has noted keeps its `books` row (the guard inside
+ * `deleteBookIfUnreferenced` sees the note), so it stays on /my-notes
+ * with its notes intact.
  */
 export async function DELETE(_request: Request, { params }: RouteContext) {
   const ownerKey = await getOwnerKey()

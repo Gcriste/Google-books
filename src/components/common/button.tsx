@@ -7,7 +7,6 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: 'small' | 'medium' | 'large' | 'none'
   disabled?: boolean
   className?: string
-  disableCursorPointer?: boolean
 }
 
 const Button = ({
@@ -17,13 +16,10 @@ const Button = ({
   size = 'medium',
   disabled = false,
   className = '',
-  disableCursorPointer = false,
   ...rest
 }: ButtonProps) => {
   const baseStyles = 'rounded focus:outline-none transition duration-200'
   const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed' : ''
-
-  const cursorStyle = disableCursorPointer && !disabled ? 'cursor-default' : ''
 
   const variantStyles = {
     primary: 'bg-primary text-white hover:bg-blue-500',
@@ -45,7 +41,7 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${cursorStyle} ${disabledStyles} ${className}`}
+      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabledStyles} ${className}`}
       disabled={disabled}
       {...rest}
     >

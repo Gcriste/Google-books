@@ -3,7 +3,7 @@ import type { NeonQueryFunction } from '@neondatabase/serverless'
 import { format } from 'date-fns/format'
 import type {
   BookType,
-  Review,
+  Note,
   SaleInfo,
   SavedBook,
   VolumeInfo
@@ -11,13 +11,12 @@ import type {
 
 type Sql = NeonQueryFunction<false, false>
 
-export const REVIEW_DATE_FORMAT = 'MMMM dd, yyyy'
+export const NOTE_DATE_FORMAT = 'MMMM dd, yyyy'
 
-type ReviewRow = {
+type NoteRow = {
   id: string
   title: string
   message: string
-  rating: number
   updatedAt: string | null
 }
 
@@ -27,21 +26,14 @@ type SavedBookRow = {
   volume_info: VolumeInfo
   sale_info: SaleInfo
   self_link: string | null
-  reviews: ReviewRow[] | null
+  notes: NoteRow[] | null
 }
 
-const toReview = ({
+const toNote = ({ id, title, message, updatedAt }: NoteRow): Note => ({
   id,
   title,
   message,
-  rating,
-  updatedAt
-}: ReviewRow): Review => ({
-  id,
-  title,
-  message,
-  rating: Number(rating),
-  lastUpdated: updatedAt ? format(new Date(updatedAt), REVIEW_DATE_FORMAT) : ''
+  lastUpdated: updatedAt ? format(new Date(updatedAt), NOTE_DATE_FORMAT) : ''
 })
 
 const rowToBook = (row: SavedBookRow): BookType => ({
@@ -50,7 +42,7 @@ const rowToBook = (row: SavedBookRow): BookType => ({
   volumeInfo: row.volume_info,
   saleInfo: row.sale_info ?? {},
   selfLink: row.self_link ?? '',
-  reviews: (row.reviews ?? []).map(toReview)
+  notes: (row.notes ?? []).map(toNote)
 })
 
 export const selectSavedBooks = async (
@@ -61,7 +53,7 @@ export const selectSavedBooks = async (
     with owned as (
       select book_id from favorites where owner_key = ${ownerKey}
       union
-      select book_id from reviews where owner_key = ${ownerKey}
+      select book_id from notes where owner_key = ${ownerKey}
     )
     select
       b.book_id,
@@ -72,22 +64,21 @@ export const selectSavedBooks = async (
       coalesce(
         json_agg(
           json_build_object(
-            'id', r.id,
-            'title', r.title,
-            'message', r.message,
-            'rating', r.rating,
-            'updatedAt', r.updated_at
+            'id', n.id,
+            'title', n.title,
+            'message', n.message,
+            'updatedAt', n.updated_at
           )
-          order by r.created_at
-        ) filter (where r.id is not null),
+          order by n.created_at
+        ) filter (where n.id is not null),
         '[]'
-      ) as reviews
+      ) as notes
     from owned o
     join books b on b.book_id = o.book_id
     left join favorites f
       on f.book_id = o.book_id and f.owner_key = ${ownerKey}
-    left join reviews r
-      on r.book_id = o.book_id and r.owner_key = ${ownerKey}
+    left join notes n
+      on n.book_id = o.book_id and n.owner_key = ${ownerKey}
     group by b.book_id, f.owner_key, b.volume_info, b.sale_info, b.self_link
   `) as SavedBookRow[]
 
@@ -135,15 +126,15 @@ export const deleteBookIfUnreferenced = (sql: Sql, bookId: string) => sql`
   delete from books b
   where b.book_id = ${bookId}
     and not exists (select 1 from favorites f where f.book_id = b.book_id)
-    and not exists (select 1 from reviews r where r.book_id = b.book_id)
+    and not exists (select 1 from notes n where n.book_id = b.book_id)
 `
 
-export const insertReview = (
+export const insertNote = (
   sql: Sql,
   ownerKey: string,
   bookId: string,
-  review: { title: string; message: string; rating: number }
+  note: { title: string; message: string }
 ) => sql`
-  insert into reviews (owner_key, book_id, title, message, rating)
-  values (${ownerKey}, ${bookId}, ${review.title}, ${review.message}, ${review.rating})
+  insert into notes (owner_key, book_id, title, message)
+  values (${ownerKey}, ${bookId}, ${note.title}, ${note.message})
 `

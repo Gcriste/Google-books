@@ -8,8 +8,8 @@ You can view the live application here: [Google Books API App](https://google-bo
 ## Features
 - **Search Books**: Search for books using keywords, titles, or authors.
 - **View Details**: View detailed information about each book, including the description, authors, and publishing details.
-- **Save to Favorites**: Add books to a favorites list saved to your account and view them later. Removing a favorite deletes it; a book you have reviewed is kept so the review survives.
-- **Write a Reivew**: Can write reviews saved to your account, on any book — favorited or not.
+- **Save to Favorites**: Add books to a favorites list saved to your account and view them later. Removing a favorite deletes it; a book you have written a note on is kept so the note survives.
+- **Write a Note**: Can write notes saved to your account, on any book — favorited or not.
 - **Responsive Design**: Fully responsive UI using Tailwind CSS, optimized for both mobile and desktop devices.
 
 
@@ -35,6 +35,7 @@ editor.
 | `001-user-first-last-name.sql` | Adds `firstName`/`lastName` to the better-auth `user` table. |
 | `002` | **Missing from this repo.** Earlier revisions of this README referenced a `002-user-address.sql`; the address columns it describes are already in `db/auth-schema.sql`, so a fresh database has them. Check `\d "user"` against a database before assuming it was applied. |
 | `003-normalize-books-favorites.sql` | Splits `saved_books` into `books` + `favorites`. Read its header first — it is meant to be run in two passes, with a row-count check before the final `drop table`. |
+| `004-reviews-to-notes.sql` | Renames `reviews` to `notes` and drops the `rating` column. Irreversible — existing star values are discarded. |
 ### 5. Run development server locally: 
 npm run dev
 

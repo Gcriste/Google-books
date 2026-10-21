@@ -3,12 +3,12 @@
 import { useCallback } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  addReview,
+  addNote,
   fetchSavedBooks,
   removeFavorite,
   updateBook
 } from '@/services/saved-books'
-import type { BookType, NewReview, SavedBook } from '@/app/types'
+import type { BookType, NewNote, SavedBook } from '@/app/types'
 import { queryKeys } from './query-keys'
 import { useUser } from './use-user'
 
@@ -48,8 +48,8 @@ export const useSavedBooks = () => {
 const selectFavorites = (books: SavedBook): BookType[] =>
   Object.values(books).filter(book => book.isFavorite)
 
-const selectWithReviews = (books: SavedBook): BookType[] =>
-  Object.values(books).filter(book => !!book.reviews?.length)
+const selectWithNotes = (books: SavedBook): BookType[] =>
+  Object.values(books).filter(book => !!book.notes?.length)
 
 /**
  * Saved books the user has favorited.
@@ -68,14 +68,14 @@ export const useFavoriteBooks = () => {
   })
 }
 
-/** Saved books the user has written at least one review for. */
-export const useBooksWithReviews = () => {
+/** Saved books the user has written at least one note for. */
+export const useBooksWithNotes = () => {
   const { isSignedIn } = useUser()
 
   return useQuery({
     queryKey: queryKeys.savedBooks,
     queryFn: fetchSavedBooks,
-    select: selectWithReviews,
+    select: selectWithNotes,
     enabled: isSignedIn
   })
 }
@@ -119,11 +119,11 @@ export const useUpdateBook = () => {
 
       queryClient.setQueryData<SavedBook>(queryKeys.savedBooks, current => ({
         ...(current ?? {}),
-        // The book may come from search results, which carry no reviews —
+        // The book may come from search results, which carry no notes —
         // keep whatever the cache already holds for it.
         [book.id]: {
           ...book,
-          reviews: book.reviews ?? current?.[book.id]?.reviews ?? []
+          notes: book.notes ?? current?.[book.id]?.notes ?? []
         }
       }))
 
@@ -143,8 +143,8 @@ export const useUpdateBook = () => {
  * Remove a favorite.
  *
  * Mirrors `useUpdateBook`'s optimistic pattern, applying the same rule the
- * server applies: a book with reviews stays in the map unfavorited (it is
- * still the user's, and /my-reviews shows it), while one without reviews
+ * server applies: a book with notes stays in the map unfavorited (it is
+ * still the user's, and /my-notes shows it), while one without notes
  * leaves the map entirely because the server deletes it outright.
  */
 export const useRemoveFavorite = () => {
@@ -158,7 +158,7 @@ export const useRemoveFavorite = () => {
 
       queryClient.setQueryData<SavedBook>(queryKeys.savedBooks, current => {
         const { [book.id]: removed, ...rest } = current ?? {}
-        if (!removed?.reviews?.length) return rest
+        if (!removed?.notes?.length) return rest
 
         return { ...rest, [book.id]: { ...removed, isFavorite: false } }
       })
@@ -175,6 +175,6 @@ export const useRemoveFavorite = () => {
   })
 }
 
-/** Write a review, caching the book if it was never saved. */
-export const useAddReview = () =>
-  useSavedBooksMutation<{ book: BookType; review: NewReview }>(addReview)
+/** Write a note, caching the book if it was never saved. */
+export const useAddNote = () =>
+  useSavedBooksMutation<{ book: BookType; note: NewNote }>(addNote)

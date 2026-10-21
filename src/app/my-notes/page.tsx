@@ -2,26 +2,26 @@
 
 import { Container } from '@/components/common'
 import SavedBooksContainer from '@/components/shared/saved-books-container'
-import { useBooksWithReviews } from '@/hooks/use-saved-books'
+import { useBooksWithNotes } from '@/hooks/use-saved-books'
 import type { BookType } from '@/app/types'
 
 // Module scope: a fresh [] each render would be a new array prop every time.
 const EMPTY_BOOKS: BookType[] = []
 
-const MyReviewsPage = () => {
-  const { data: books = EMPTY_BOOKS, isLoading, error } = useBooksWithReviews()
+const MyNotesPage = () => {
+  const { data: books = EMPTY_BOOKS, isLoading, error } = useBooksWithNotes()
 
   return (
-    <Container title="My Reviews">
+    <Container title="My Notes">
       <SavedBooksContainer
         books={books}
         isLoading={isLoading}
         error={error}
-        emptyText="No reviews written"
-        isMyReviews
+        emptyText="No notes written"
+        isMyNotes
       />
     </Container>
   )
 }
 
-export default MyReviewsPage
+export default MyNotesPage

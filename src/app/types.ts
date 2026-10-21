@@ -18,22 +18,21 @@ export type SaleInfo = {
   listPrice?: { amount: number; currencyCode: string }
 }
 
-export type Review = {
+export type Note = {
   id: string
   title: string
   message: string
   lastUpdated: string
-  rating: number
 }
 
-/** A review as submitted. The id and timestamp are the server's to assign. */
-export type NewReview = Pick<Review, 'title' | 'message' | 'rating'>
+/** A note as submitted. The id and timestamp are the server's to assign. */
+export type NewNote = Pick<Note, 'title' | 'message'>
 
 export type BookType = {
   id: string
   isFavorite?: boolean
   volumeInfo: VolumeInfo
-  reviews?: Review[]
+  notes?: Note[]
   saleInfo: SaleInfo
   selfLink: string
 }
@@ -45,6 +44,5 @@ export type SavedBook = {
 export type FormValues = {
   searchStr: string
   title: string
-  reviewText: string
-  rating: number
+  noteText: string
 }

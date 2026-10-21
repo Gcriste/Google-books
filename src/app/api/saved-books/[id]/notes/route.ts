@@ -1,21 +1,21 @@
 import { NextResponse } from 'next/server'
 import { getSql } from '@/lib/db'
 import { getOwnerKey } from '@/lib/owner'
-import { insertReview, selectSavedBooks, upsertBook } from '@/lib/saved-books'
+import { insertNote, selectSavedBooks, upsertBook } from '@/lib/saved-books'
 import type { BookType } from '@/app/types'
 
 export const dynamic = 'force-dynamic'
 
 type RouteContext = { params: Promise<{ id: string }> }
 
-type ReviewPayload = {
+type NotePayload = {
   book: BookType
-  review: { title: string; message: string; rating: number }
+  note: { title: string; message: string }
 }
 
 /**
- * Adds a review. The book is cached first because a review can be written for
- * a book nobody has saved yet, and the foreign key requires the row.
+ * Adds a note. The book is cached first because a note can be written for a
+ * book nobody has saved yet, and the foreign key requires the row.
  */
 export async function POST(request: Request, { params }: RouteContext) {
   const ownerKey = await getOwnerKey()
@@ -24,24 +24,14 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   const { id } = await params
-  const { book, review } = (await request.json()) as ReviewPayload
+  const { book, note } = (await request.json()) as NotePayload
 
   if (!book?.volumeInfo) {
     return NextResponse.json({ error: 'Missing book data' }, { status: 400 })
   }
-  if (!review?.title?.trim() || !review?.message?.trim()) {
+  if (!note?.title?.trim() || !note?.message?.trim()) {
     return NextResponse.json(
-      { error: 'Review title and message are required' },
-      { status: 400 }
-    )
-  }
-  if (
-    !Number.isInteger(review.rating) ||
-    review.rating < 1 ||
-    review.rating > 5
-  ) {
-    return NextResponse.json(
-      { error: 'Rating must be between 1 and 5' },
+      { error: 'Note title and message are required' },
       { status: 400 }
     )
   }
@@ -49,7 +39,7 @@ export async function POST(request: Request, { params }: RouteContext) {
   const sql = getSql()
   await sql.transaction([
     upsertBook(sql, { ...book, id }),
-    insertReview(sql, ownerKey, id, review)
+    insertNote(sql, ownerKey, id, note)
   ])
 
   const savedBooks = await selectSavedBooks(sql, ownerKey)

@@ -34,7 +34,7 @@ const Navbar = () => {
   const primaryNavItems = [
     { name: 'Search', route: '/search', secondaryRoute: '/' },
     { name: 'Favorites', route: '/favorites', hidden: !isSignedIn },
-    { name: 'My Reviews', route: '/my-reviews', hidden: !isSignedIn }
+    { name: 'My Notes', route: '/my-notes', hidden: !isSignedIn }
   ]
 
   return (

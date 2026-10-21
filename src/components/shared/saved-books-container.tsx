@@ -7,7 +7,7 @@ type OwnProps = {
   isLoading?: boolean
   error: Error | null
   emptyText: string
-  isMyReviews?: boolean
+  isMyNotes?: boolean
 }
 
 /**
@@ -19,7 +19,7 @@ const SavedBooksContainer = ({
   isLoading,
   error,
   emptyText,
-  isMyReviews
+  isMyNotes
 }: OwnProps) => {
   // Only claim the list is empty once we actually know it is. Falling through
   // while loading or erroring lets BookList show its skeletons or its message.
@@ -29,7 +29,7 @@ const SavedBooksContainer = ({
     <BookList
       books={books}
       isLoading={isLoading}
-      isMyReviews={isMyReviews}
+      isMyNotes={isMyNotes}
       error={error}
     />
   )
