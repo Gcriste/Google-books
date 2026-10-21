@@ -5,11 +5,20 @@ import { Button, Flex, Text } from '../common'
 import { useForm } from 'react-hook-form'
 
 type OwnProps = {
-  onAddNote: (note: NewNote) => void
+  onSubmitNote: (note: NewNote) => void
   isPending?: boolean
+  initialNote?: NewNote
+  onCancel?: () => void
 }
 
-const NoteForm = ({ onAddNote, isPending }: OwnProps) => {
+const NoteForm = ({
+  onSubmitNote,
+  isPending,
+  initialNote,
+  onCancel
+}: OwnProps) => {
+  const isEditing = !!initialNote
+
   const {
     register,
     handleSubmit,
@@ -17,27 +26,29 @@ const NoteForm = ({ onAddNote, isPending }: OwnProps) => {
     formState: { errors }
   } = useForm<FormValues>({
     defaultValues: {
-      title: '',
-      noteText: ''
+      title: initialNote?.title ?? '',
+      noteText: initialNote?.message ?? ''
     }
   })
 
   const onSubmit = useCallback(
     (data: FormValues) => {
-      onAddNote({
+      onSubmitNote({
         title: data.title,
         message: data.noteText
       })
-      reset()
+      if (!isEditing) reset()
     },
-    [onAddNote, reset]
+    [isEditing, onSubmitNote, reset]
   )
 
   return (
     <Flex direction="col" gap="gap-2">
-      <Text variant="subheading" size="large">
-        Add a Note
-      </Text>
+      {!isEditing && (
+        <Text variant="subheading" size="large">
+          Add a Note
+        </Text>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
@@ -56,10 +67,20 @@ const NoteForm = ({ onAddNote, isPending }: OwnProps) => {
         {errors.noteText && (
           <Text variant="error">{errors.noteText.message}</Text>
         )}
-        <Flex>
+        <Flex gap="gap-2">
           <Button type="submit" className="min-w-40" disabled={isPending}>
-            {isPending ? 'Saving...' : 'Submit'}
+            {isPending ? 'Saving...' : isEditing ? 'Save' : 'Submit'}
           </Button>
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+          )}
         </Flex>
       </form>
     </Flex>

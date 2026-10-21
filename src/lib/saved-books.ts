@@ -138,3 +138,25 @@ export const insertNote = (
   insert into notes (owner_key, book_id, title, message)
   values (${ownerKey}, ${bookId}, ${note.title}, ${note.message})
 `
+
+export const updateNote = (
+  sql: Sql,
+  ownerKey: string,
+  bookId: string,
+  noteId: string,
+  note: { title: string; message: string }
+) => sql`
+  update notes
+  set title = ${note.title}, message = ${note.message}, updated_at = now()
+  where id = ${noteId} and owner_key = ${ownerKey} and book_id = ${bookId}
+`
+
+export const deleteNote = (
+  sql: Sql,
+  ownerKey: string,
+  bookId: string,
+  noteId: string
+) => sql`
+  delete from notes
+  where id = ${noteId} and owner_key = ${ownerKey} and book_id = ${bookId}
+`

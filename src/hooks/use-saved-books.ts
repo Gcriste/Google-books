@@ -4,9 +4,11 @@ import { useCallback } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   addNote,
+  deleteNote,
   fetchSavedBooks,
   removeFavorite,
-  updateBook
+  updateBook,
+  updateNote
 } from '@/services/saved-books'
 import type { BookType, NewNote, SavedBook } from '@/app/types'
 import { queryKeys } from './query-keys'
@@ -178,3 +180,11 @@ export const useRemoveFavorite = () => {
 /** Write a note, caching the book if it was never saved. */
 export const useAddNote = () =>
   useSavedBooksMutation<{ book: BookType; note: NewNote }>(addNote)
+
+export const useUpdateNote = () =>
+  useSavedBooksMutation<{ book: BookType; noteId: string; note: NewNote }>(
+    updateNote
+  )
+
+export const useDeleteNote = () =>
+  useSavedBooksMutation<{ book: BookType; noteId: string }>(deleteNote)

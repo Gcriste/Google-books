@@ -1,6 +1,7 @@
 import { Box, Button, Flex, Pagination, Text } from '../common'
 import type { BookType, NewNote, Note } from '@/app/types'
 import NoteForm from './note-form'
+import NoteItem from './note-item'
 import { useAddNote } from '@/hooks/use-saved-books'
 import { useUser } from '@/hooks/use-user'
 import { useCallback, useMemo, useState } from 'react'
@@ -24,9 +25,11 @@ const NoteContainer = ({ book, notes, isMyNotes }: OwnProps) => {
   const totalPages = Math.ceil(noteList.length / 5)
   const countPerPage = 5
   const currentNotesList = showNotes ? noteList : noteList.slice(0, 1)
+  // Deleting the last note on a page can leave currentPage past the end.
+  const activePage = Math.min(currentPage, Math.max(totalPages, 1))
   const slicedNoteList = currentNotesList.slice(
-    (currentPage - 1) * countPerPage,
-    currentPage * countPerPage
+    (activePage - 1) * countPerPage,
+    activePage * countPerPage
   )
 
   const handlePageChange = useCallback((page: number) => {
@@ -57,19 +60,9 @@ const NoteContainer = ({ book, notes, isMyNotes }: OwnProps) => {
           minHeight={currentNotesList.length > 5 ? '27em' : 'none'}
         >
           {slicedNoteList.length > 0 ? (
-            slicedNoteList.map(({ id, title, lastUpdated, message }) => (
-              <Box key={id}>
-                <Flex direction="col">
-                  <Flex align="center" justify="between">
-                    <Flex align="center">
-                      <Text variant="heading">{title}</Text>
-                    </Flex>
-                    <Text>Last updated: {lastUpdated}</Text>
-                  </Flex>
-                  <Flex justify="between">
-                    <Text>{message}</Text>
-                  </Flex>
-                </Flex>
+            slicedNoteList.map(note => (
+              <Box key={note.id}>
+                <NoteItem book={book} note={note} />
                 {!showNotes && noteList.length > 1 && (
                   <Flex justify="end">
                     <Button
@@ -89,14 +82,14 @@ const NoteContainer = ({ book, notes, isMyNotes }: OwnProps) => {
         </Flex>
         {currentNotesList.length > 5 && (
           <Pagination
-            currentPage={currentPage}
+            currentPage={activePage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
         )}
       </Flex>
       <Flex className={isMyNotes ? 'mt-8' : ''}>
-        <NoteForm onAddNote={handleAddNote} isPending={isPending} />
+        <NoteForm onSubmitNote={handleAddNote} isPending={isPending} />
       </Flex>
       {error && <Text variant="error">{error.message}</Text>}
     </>

@@ -47,3 +47,23 @@ export const addNote = ({
   note: NewNote
 }): Promise<SavedBook> =>
   sendJson(`/api/saved-books/${book.id}/notes`, 'POST', { book, note })
+
+export const updateNote = ({
+  book,
+  noteId,
+  note
+}: {
+  book: BookType
+  noteId: string
+  note: NewNote
+}): Promise<SavedBook> =>
+  sendJson(`/api/saved-books/${book.id}/notes/${noteId}`, 'PUT', { note })
+
+export const deleteNote = ({
+  book,
+  noteId
+}: {
+  book: BookType
+  noteId: string
+}): Promise<SavedBook> =>
+  sendJson(`/api/saved-books/${book.id}/notes/${noteId}`, 'DELETE')
